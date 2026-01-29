@@ -89,16 +89,17 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className="bg-light min-vh-100">
       <NavbarPortal />
 
-      <main className="container-fluid py-4">
-        {data.map(section => (
-          <Section key={section.secId} section={section} />
-        ))}
+      <main className="container py-5" style={{ maxWidth: '1400px' }}>
+        <div className="px-3">
+          {data.map(section => (
+            <Section key={section.secId} section={section} />
+          ))}
+        </div>
       </main>
-    </>
+    </div>
   );
 }
-
 
