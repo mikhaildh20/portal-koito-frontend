@@ -1,11 +1,11 @@
 import CryptoJS from "crypto-js";
-import { ASTRATECH_KEY } from "./constant";
+import { PORTAL_KEY } from "./constant";
 
 export const encryptId = (text) => {
   if (text === null || text === undefined) {
     return null;
   }
-  return CryptoJS.AES.encrypt(text.toString(), ASTRATECH_KEY).toString();
+  return CryptoJS.AES.encrypt(text.toString(), PORTAL_KEY).toString();
 };
 
 export const decryptId = (cipherText) => {
@@ -13,7 +13,7 @@ export const decryptId = (cipherText) => {
     return null;
   }
   try {
-    const bytes = CryptoJS.AES.decrypt(cipherText, ASTRATECH_KEY);
+    const bytes = CryptoJS.AES.decrypt(cipherText, PORTAL_KEY);
     const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
 
     if (!decryptedText) {
@@ -31,7 +31,7 @@ export const encryptIdUrl = (text) => {
   }
   const encrypted = CryptoJS.AES.encrypt(
     text.toString(),
-    ASTRATECH_KEY
+    PORTAL_KEY
   ).toString();
   return encrypted
     .replaceAll("+", "-")
@@ -51,7 +51,7 @@ export const decryptIdUrl = (encryptedText) => {
       encrypted += "=";
     }
 
-    const decrypted = CryptoJS.AES.decrypt(encrypted, ASTRATECH_KEY);
+    const decrypted = CryptoJS.AES.decrypt(encrypted, PORTAL_KEY);
     const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
 
     if (!decryptedText) {

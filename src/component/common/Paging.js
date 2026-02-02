@@ -18,10 +18,15 @@ export default function Paging({
     buttons.push(
       <Button
         key="prev"
-        classType="primary rounded-circle me-2"
+        classType="primary rounded-circle shadow-sm"
         isDisabled={pageCurrent === 1}
         onClick={() => navigation(pageCurrent - 1)}
-        style={{ width: 25, height: 25, padding: 0 }}
+        style={{ 
+          width: 36, 
+          height: 36, 
+          padding: 0,
+          transition: "all 0.2s ease",
+        }}
         cssIcon="text-white"
         iconName="chevron-left"
       />
@@ -40,21 +45,53 @@ export default function Paging({
     uniquePages.forEach((page) => {
       if (page - lastPage > 1) {
         buttons.push(
-          <span key={`dots-${page}`} className="mx-1 text-secondary">
-            ...
+          <span 
+            key={`dots-${page}`} 
+            className="mx-2 text-muted fw-bold"
+            style={{ 
+              fontSize: "1.1rem",
+              userSelect: "none"
+            }}
+          >
+            ···
           </span>
         );
       }
 
       buttons.push(
-        <Button
+        <button
           key={page}
-          classType={`sm ${
-            page === pageCurrent ? "fw-bold text-primary" : "text-secondary"
-          } bg-transparent border-0`}
+          className={`btn btn-sm mx-1 ${
+            page === pageCurrent 
+              ? "btn-primary shadow-sm" 
+              : "btn-light text-secondary"
+          }`}
           onClick={() => navigation(page)}
-          label={page}
-        />
+          style={{
+            minWidth: "36px",
+            height: "36px",
+            fontWeight: page === pageCurrent ? "600" : "500",
+            borderRadius: "0.5rem",
+            transition: "all 0.2s ease",
+            border: page === pageCurrent ? "none" : "1px solid #e9ecef",
+          }}
+          onMouseEnter={(e) => {
+            if (page !== pageCurrent) {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (page !== pageCurrent) {
+              e.currentTarget.style.backgroundColor = "";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "";
+            }
+          }}
+        >
+          {page}
+        </button>
       );
 
       lastPage = page;
@@ -63,10 +100,15 @@ export default function Paging({
     buttons.push(
       <Button
         key="next"
-        classType="btn btn-primary rounded-circle ms-2"
+        classType="btn btn-primary rounded-circle shadow-sm"
         isDisabled={pageCurrent === totalPage}
         onClick={() => navigation(pageCurrent + 1)}
-        style={{ width: 25, height: 25, padding: 0 }}
+        style={{ 
+          width: 36, 
+          height: 36, 
+          padding: 0,
+          transition: "all 0.2s ease",
+        }}
         cssIcon="text-white"
         iconName="chevron-right"
       />
@@ -76,15 +118,59 @@ export default function Paging({
   }, [pageCurrent, totalPage, navigation]);
 
   return (
-    <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2">
-      <div className="d-flex align-items-center">{pageButtons}</div>
-      <div className="text-secondary small">
-        Menampilkan{" "}
-        <span className="fw-semibold text-primary">
-          {startData}-{endData}
-        </span>{" "}
-        dari <span className="fw-semibold text-primary">{totalData}</span> data
+    <div className="py-3 px-2">
+      <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div className="d-flex align-items-center gap-1">
+          {pageButtons}
+        </div>
+        
+        <div 
+          className="text-secondary d-flex align-items-center gap-1"
+          style={{
+            fontSize: "0.875rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "0.5rem",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          <span>Showing</span>
+          <span 
+            className="fw-semibold text-primary px-1"
+            style={{
+              fontSize: "0.9375rem",
+            }}
+          >
+            {startData}–{endData}
+          </span>
+          <span>of</span>
+          <span 
+            className="fw-semibold text-primary px-1"
+            style={{
+              fontSize: "0.9375rem",
+            }}
+          >
+            {totalData}
+          </span>
+        </div>
       </div>
+
+      <style jsx>{`
+        .btn-primary:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25) !important;
+        }
+
+        .btn-primary:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .btn:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+        }
+      `}</style>
     </div>
   );
 }

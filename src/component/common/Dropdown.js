@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const DropDown = (
   {
     arrData,
-    type = "pilih",
+    type = "choose",
     label = "",
     forInput,
     isRequired = false,
@@ -19,15 +19,15 @@ const DropDown = (
   let placeholder = "";
 
   switch (type) {
-    case "pilih":
+    case "choose":
       placeholder = (
         <option value="" disabled>
-          {"-- Pilih " + label + " --"}
+          {"-- Choose " + label + " --"}
         </option>
       );
       break;
-    case "semua":
-      placeholder = <option value="">-- Semua --</option>;
+    case "all":
+      placeholder = <option value="">-- All --</option>;
       break;
     default:
       break;

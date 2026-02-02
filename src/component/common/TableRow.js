@@ -32,13 +32,13 @@ export default function TableRow({
       actions.map((action) => {
         switch (action) {
           case "Toggle": {
-            if (status === "Aktif") {
+            if (status === "Active") {
               return (
                 <Icon
                   key={`${id}-${action}`}
                   name="toggle-on"
                   type="Bold"
-                  cssClass="btn px-1 py-0 text-primary"
+                  cssClass="btn px-1 py-0 text-success"
                   title="Nonaktifkan"
                   onClick={() => onToggle(id)}
                 />
@@ -49,8 +49,8 @@ export default function TableRow({
                   key={`${id}-${action}`}
                   name="toggle-off"
                   type="Bold"
-                  cssClass="btn px-1 py-0 text-secondary"
-                  title="Aktifkan"
+                  cssClass="btn px-1 py-0 text-muted"
+                  title="Inactive"
                   onClick={() => onToggle(id)}
                 />
               );
@@ -64,7 +64,7 @@ export default function TableRow({
                 key={`${id}-${action}`}
                 name="eye"
                 title="Lihat Detail"
-                cssClass="text-primary btn px-1 py-0"
+                cssClass="text-info btn px-1 py-0"
                 onClick={() => onDetail(id)}
               />
             );
@@ -86,7 +86,7 @@ export default function TableRow({
                 key={`${id}-${action}`}
                 name="pencil-square"
                 title="Ubah"
-                cssClass="text-primary btn px-1 py-0"
+                cssClass="text-warning btn px-1 py-0"
                 onClick={() => onEdit(id)}
               />
             );
@@ -128,7 +128,7 @@ export default function TableRow({
                 key={`${id}-${action}`}
                 name="printer"
                 title="Cetak"
-                cssClass="text-primary btn px-1 py-0"
+                cssClass="text-secondary btn px-1 py-0"
                 onClick={() => onPrint(id)}
               />
             );
@@ -207,9 +207,23 @@ export default function TableRow({
 
   return (
     <tr
-      className={`align-middle ${
-        isSelected ? "table-active" : ""
+      className={`align-middle transition-all ${
+        isSelected ? "table-active bg-light" : ""
       } ${customRowClass}`}
+      style={{
+        transition: "background-color 0.2s ease",
+        cursor: canSelect && enableCheckbox ? "pointer" : "default",
+      }}
+      onMouseEnter={(e) => {
+        if (!isSelected) {
+          e.currentTarget.style.backgroundColor = "#f8f9fa";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isSelected) {
+          e.currentTarget.style.backgroundColor = "transparent";
+        }
+      }}
     >
       {columns.map((col, index) => {
         let cell;
@@ -220,10 +234,14 @@ export default function TableRow({
             cell = (
               <input
                 type="checkbox"
-                className="form-check-input"
+                className="form-check-input shadow-sm"
                 checked={isSelected}
                 onChange={() => onSelectRow(row.id)}
-                style={{ cursor: "pointer" }}
+                style={{ 
+                  cursor: "pointer",
+                  width: "18px",
+                  height: "18px"
+                }}
               />
             );
           } else {
@@ -231,27 +249,48 @@ export default function TableRow({
           }
         } else if (col === "Status") {
           cell = <Badge status={row[col]} />;
-        } else if (col === "Aksi") {
-          cell = renderAction(row[col], row.id, row.Status);
+        } else if (col === "Action") {
+          cell = (
+            <div className="d-flex justify-content-center align-items-center gap-1">
+              {renderAction(row[col], row.id, row.Status)}
+            </div>
+          );
         } else if (typeof row[col] === "string") {
           cell = (
             <div
-              style={{ whiteSpace: isWrap ? "normal" : "nowrap" }}
+              className="px-2"
+              style={{ 
+                whiteSpace: isWrap ? "normal" : "nowrap",
+                fontSize: "0.875rem",
+                color: "#495057"
+              }}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(row[col]),
               }}
             ></div>
           );
         } else {
-          cell = row[col];
+          cell = (
+            <div 
+              className="px-2"
+              style={{
+                fontSize: "0.875rem",
+                color: "#495057"
+              }}
+            >
+              {row[col]}
+            </div>
+          );
         }
 
         return (
           <td
             key={col + "-" + index}
-            className="py-2 border-bottom"
+            className="py-3 border-bottom"
             style={{
               textAlign: row.Alignment ? row.Alignment[index] : "center",
+              verticalAlign: "middle",
+              borderColor: "#e9ecef",
             }}
           >
             {cell}
