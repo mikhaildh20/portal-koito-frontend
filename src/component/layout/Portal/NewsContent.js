@@ -36,7 +36,20 @@ export default function NewsContent({ contents }) {
               <td className="text-muted small">
                 {new Date(item.cteDate).toLocaleDateString('id-ID')}
               </td>
-              <td className="small">{item.cteName}</td>
+              <td className="small">
+                {item.cteLink ? (
+                  <a 
+                    href={item.cteLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-decoration-none"
+                  >
+                    {item.cteName}
+                  </a>
+                ) : (
+                  item.cteName
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -8,38 +8,33 @@ import Footer from "./Footer";
 
 export default function CmsShell({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // Auto close sidebar di mobile, auto open di desktop
   useEffect(() => {
+    setHasMounted(true);
+
     const handleResize = () => {
-      if (window.innerWidth < 992) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
-      }
+      if (window.innerWidth < 992) setIsSidebarOpen(false);
+      else setIsSidebarOpen(true);
     };
 
-    // Set initial state
     handleResize();
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // Jangan render UI sampai client mount
+  if (!hasMounted) return null;
 
   return (
     <div className="d-flex min-vh-100 bg-light position-relative">
-      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
 
       <div className="flex-grow-1 d-flex flex-column" style={{ minWidth: 0 }}>
-        <Navbar onToggleSidebar={toggleSidebar} />
+        <Navbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <main className="p-4 flex-grow-1">
-          {children}
-        </main>
+        <main className="p-4 flex-grow-1">{children}</main>
 
         <Footer />
       </div>

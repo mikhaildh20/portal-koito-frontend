@@ -12,7 +12,11 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+  font-family: var(--font-inter), sans-serif;
+}
+
+code, pre {
+  font-family: var(--font-mono), monospace;
 }
 
 /* /src/app/globals.css */

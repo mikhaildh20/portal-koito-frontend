@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef, use } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Paging from "@/component/common/Paging";
 import Table from "@/component/common/Table";
 import Toast from "@/component/common/Toast";
@@ -16,7 +16,10 @@ import DateFormatter from "@/lib/dateFormater";
 export default function SectionPage() {
     const router = useRouter();
     const [dataSection, setDataSection] = useState([]);
+    const [dataOrder, setDataOrder] = useState([]);
+    const [isOrderDataReady, setIsOrderDataReady] = useState(false);
     const [loading, setLoading] = useState(true);
+    const orderRef = useRef();
     const sortRef = useRef();
     const statusRef = useRef();
     const [isClient, setIsClient] = useState(false);
@@ -41,9 +44,69 @@ export default function SectionPage() {
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState(dataFilterSort[0].Value);
     const [sortStatus, setSortStatus] = useState(dataFilterStatus[0].Value);
+    const [orderCurrent, setOrderCurrent] = useState(dataOrder[0]?.Value || "");
+
+    useEffect(() => {
+        const fetchOrderData = async () => {
+            try {
+                const response = await fetchData(
+                    API_LINK + "Section/GetOrder",
+                    {},
+                    "GET"
+                );
+
+                if (response.error) {
+                    throw new Error(response.message);
+                }
+
+                const dataArray = response.data || [];
+
+                // mapping langsung dari angka
+                const mappedData = dataArray.map(num => ({
+                    Value: num,
+                    Text: `Order - ${num}`,
+                }));
+
+                setDataOrder(mappedData);
+                setIsOrderDataReady(true);
+                console.log("Mapped order data:", mappedData);
+            } catch (err) {
+                Toast.error(err.message || "Failed to load order data");
+                setIsOrderDataReady(true);
+            }
+        };
+
+        fetchOrderData();
+    }, []);
+
+    const handleOrderChange = async (sectionId, newOrderValue) => {
+        try {
+            // const response = await fetchData(
+            //     API_LINK + "Section/UpdateOrder",
+            //     {
+            //         id: sectionId,
+            //         order: newOrderValue
+            //     },
+            //     "POST" // atau "PUT" sesuai API lu
+            // );
+            
+            // if (response.error) {
+            //     throw new Error(response.message);
+            // }
+
+            console.log(`Order for section ID ${sectionId} updated to ${newOrderValue}`);
+            
+            Toast.success("Order updated successfully!");
+            
+            // Reload data to show updated order
+            loadData(currentPage, currentSort, currentSearch, currentStatus);
+        } catch (err) {
+            Toast.error(err.message || "Failed to update order");
+        }
+    };
 
     const loadData = useCallback(async (page, sort, cari, status) => {
-        try{
+        try {
             setLoading(true);
 
             const response = await fetchData(
@@ -58,17 +121,25 @@ export default function SectionPage() {
                 "GET"
             );
 
-            if(response.error){
+            if (response.error) {
                 throw new Error(response.message);
             }
 
-            const {data, totalData} = response;
+            const { data, totalData } = response;
             const pagedData = data.map((item, index) => ({
                 No: (page - 1) * pageSize + index + 1,
                 id: item.id,
                 Name: item.sectionName,
                 Status: item.sectionStatus === 1 ? "Active" : "Inactive",
-                Order: item.sectionOrder,
+                Order: (
+                    <DropDown 
+                        arrData={dataOrder}
+                        type="choose" 
+                        value={item.sectionOrder || item.order || ""} 
+                        onChange={(e) => handleOrderChange(item.id, e.target.value)} 
+                        showLabel={false}
+                    />
+                ),
                 Action: ["Edit", "Toggle"],
                 Alignment: ["center", "center", "center", "center", "center"],
             }));
@@ -76,14 +147,14 @@ export default function SectionPage() {
             setDataSection(pagedData || []);
             setTotalData(totalData || 0);
             setCurrentPage(page);
-        }catch(err){
-            Toast.err(err.message || "Failed to load data");
+        } catch (err) {
+            Toast.error(err.message || "Failed to load data");
             setDataSection([]);
             setTotalData(0);
-        }finally{
+        } finally {
             setLoading(false);
         }
-    }, [pageSize]);
+    }, [pageSize, dataOrder]);
 
     const handleSearch = useCallback((query) => {
         setSearch(query);
@@ -167,7 +238,7 @@ export default function SectionPage() {
             <DropDown
             ref={sortRef}
             arrData={dataFilterSort}
-            type="pilih"
+            type="choose"
             label="Urutkan"
             forInput="sortBy"
             defaultValue={sortBy}
@@ -175,7 +246,7 @@ export default function SectionPage() {
             <DropDown
             ref={statusRef}
             arrData={dataFilterStatus}
-            type="pilih"
+            type="choose"
             label="Status"
             forInput="sortStatus"
             defaultValue={sortStatus}
