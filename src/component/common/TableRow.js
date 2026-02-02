@@ -39,18 +39,18 @@ export default function TableRow({
                   name="toggle-on"
                   type="Bold"
                   cssClass="btn px-1 py-0 text-success"
-                  title="Nonaktifkan"
+                  title="Disable"
                   onClick={() => onToggle(id)}
                 />
               );
-            } else if (status === "Tidak Aktif") {
+            } else if (status === "Inactive") {
               return (
                 <Icon
                   key={`${id}-${action}`}
                   name="toggle-off"
                   type="Bold"
                   cssClass="btn px-1 py-0 text-muted"
-                  title="Inactive"
+                  title="Enable"
                   onClick={() => onToggle(id)}
                 />
               );
@@ -63,7 +63,7 @@ export default function TableRow({
               <Icon
                 key={`${id}-${action}`}
                 name="eye"
-                title="Lihat Detail"
+                title="See Detail"
                 cssClass="text-info btn px-1 py-0"
                 onClick={() => onDetail(id)}
               />
@@ -75,7 +75,7 @@ export default function TableRow({
                 name="file-earmark-x"
                 type="Bold"
                 cssClass="btn px-1 py-0 text-danger"
-                title="Batalkan"
+                title="Cancel"
                 onClick={() => onCancel(id)}
               />
             );
@@ -85,7 +85,7 @@ export default function TableRow({
               <Icon
                 key={`${id}-${action}`}
                 name="pencil-square"
-                title="Ubah"
+                title="Edit"
                 cssClass="text-warning btn px-1 py-0"
                 onClick={() => onEdit(id)}
               />
@@ -95,7 +95,7 @@ export default function TableRow({
               <Icon
                 key={`${id}-${action}`}
                 name="trash"
-                title="Hapus"
+                title="Delete"
                 cssClass="text-danger btn px-1 py-0"
                 onClick={() => onDelete(id)}
               />
@@ -107,7 +107,7 @@ export default function TableRow({
                 name="check"
                 type="Bold"
                 cssClass="btn px-1 py-0 text-success"
-                title="Setujui Pengajuan"
+                title="Approve Request"
                 onClick={() => onApprove(id)}
               />
             );
@@ -118,7 +118,7 @@ export default function TableRow({
                 name="x"
                 type="Bold"
                 cssClass="btn px-1 py-0 text-danger"
-                title="Tolak Pengajuan"
+                title="Reject Request"
                 onClick={() => onReject(id)}
               />
             );
@@ -127,7 +127,7 @@ export default function TableRow({
               <Icon
                 key={`${id}-${action}`}
                 name="printer"
-                title="Cetak"
+                title="Print"
                 cssClass="text-secondary btn px-1 py-0"
                 onClick={() => onPrint(id)}
               />
@@ -137,7 +137,7 @@ export default function TableRow({
               <Icon
                 key={`${id}-${action}`}
                 name="send"
-                title="Kirim"
+                title="Sent"
                 cssClass="text-primary btn px-1 py-0"
                 onClick={() => onSent(id)}
               />
@@ -149,7 +149,7 @@ export default function TableRow({
                 name="cloud-upload"
                 type="Bold"
                 cssClass="btn px-1 py-0 text-primary"
-                title="Unggah Berkas"
+                title="Upload File"
                 onClick={() => onUpload(id)}
               />
             );
@@ -160,7 +160,7 @@ export default function TableRow({
                 name="hammer"
                 type="Bold"
                 cssClass="btn px-1 py-0 text-primary"
-                title="Finalkan"
+                title="Finalize"
                 onClick={() => onFinal(id)}
               />
             );
