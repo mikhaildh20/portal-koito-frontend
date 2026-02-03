@@ -18,7 +18,7 @@ export default function Paging({
     buttons.push(
       <Button
         key="prev"
-        classType="primary rounded-circle shadow-sm"
+        classType="success rounded-circle shadow-sm"
         isDisabled={pageCurrent === 1}
         onClick={() => navigation(pageCurrent - 1)}
         style={{ 
@@ -63,7 +63,7 @@ export default function Paging({
           key={page}
           className={`btn btn-sm mx-1 ${
             page === pageCurrent 
-              ? "btn-primary shadow-sm" 
+              ? "btn-success shadow-sm" 
               : "btn-light text-secondary"
           }`}
           onClick={() => navigation(page)}
@@ -100,7 +100,7 @@ export default function Paging({
     buttons.push(
       <Button
         key="next"
-        classType="btn btn-primary rounded-circle shadow-sm"
+        classType="btn btn-success rounded-circle shadow-sm"
         isDisabled={pageCurrent === totalPage}
         onClick={() => navigation(pageCurrent + 1)}
         style={{ 
@@ -136,7 +136,7 @@ export default function Paging({
         >
           <span>Showing</span>
           <span 
-            className="fw-semibold text-primary px-1"
+            className="fw-semibold text-success px-1"
             style={{
               fontSize: "0.9375rem",
             }}
@@ -145,7 +145,7 @@ export default function Paging({
           </span>
           <span>of</span>
           <span 
-            className="fw-semibold text-primary px-1"
+            className="fw-semibold text-success px-1"
             style={{
               fontSize: "0.9375rem",
             }}
@@ -156,12 +156,12 @@ export default function Paging({
       </div>
 
       <style jsx>{`
-        .btn-primary:hover:not(:disabled) {
+        .btn-success:hover:not(:disabled) {
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25) !important;
         }
 
-        .btn-primary:disabled {
+        .btn-success:disabled {
           opacity: 0.4;
           cursor: not-allowed;
         }

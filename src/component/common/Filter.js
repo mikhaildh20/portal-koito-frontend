@@ -8,11 +8,9 @@ export default function Filter({ children, onClick }) {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Import Bootstrap dropdown di client-side
     if (typeof window !== "undefined") {
       import("bootstrap/dist/js/bootstrap.bundle.min.js").then((bootstrap) => {
         if (dropdownRef.current) {
-          // Initialize dropdown
           new bootstrap.Dropdown(dropdownRef.current);
         }
       });
@@ -24,7 +22,7 @@ export default function Filter({ children, onClick }) {
       <Button
         ref={dropdownRef}
         iconName="funnel"
-        classType="primary dropdown-toggle border-start"
+        classType="success dropdown-toggle border-start"
         title="Search or filter"
         data-bs-toggle="dropdown"
         data-bs-auto-close="outside"
@@ -33,7 +31,7 @@ export default function Filter({ children, onClick }) {
         {children}
         <div className="d-flex justify-content-end mt-3">
           <Button
-            classType="primary"
+            classType="success"
             iconName="save"
             title="Apply"
             label="Apply"

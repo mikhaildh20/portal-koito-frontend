@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function NavbarPortal() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom sticky-top">
       <div className="container py-2" style={{ maxWidth: '1400px' }}>
         <div className="navbar-brand d-flex align-items-center gap-3">
           <Image

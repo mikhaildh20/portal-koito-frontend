@@ -140,7 +140,7 @@ export default function Sidebar({ isOpen, onToggle }) {
                     href={item.path}
                     className={`nav-link d-flex align-items-center gap-3 rounded ${
                       isActive
-                        ? "bg-primary text-white"
+                        ? "bg-danger text-white"
                         : "text-white-50 hover-bg-secondary"
                     }`}
                     style={{

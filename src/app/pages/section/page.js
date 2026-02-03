@@ -12,10 +12,12 @@ import { API_LINK } from "@/lib/constant";
 import { encryptIdUrl } from "@/lib/encryptor";
 import SweetAlert from "@/component/common/SweetAlert";
 import DateFormatter from "@/lib/dateFormater";
+import Breadcrumb from "@/component/common/Breadcrumb";
 
 export default function SectionPage() {
     const router = useRouter();
     const [dataSection, setDataSection] = useState([]);
+    const [dataSectionRaw, setDataSectionRaw] = useState([]);
     const [dataOrder, setDataOrder] = useState([]);
     const [isOrderDataReady, setIsOrderDataReady] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -113,7 +115,7 @@ export default function SectionPage() {
                 "GET"
             );
 
-            console.log("Fetched section data:", response);
+            setDataSectionRaw(response.data || []);
 
             if (response.error) {
                 throw new Error(response.message);
@@ -174,25 +176,31 @@ export default function SectionPage() {
     },[sortBy, search, sortStatus, loadData]);
 
     const handleAdd = useCallback(() => {
-        router.push("/pages/pengaturan-dasar/institusi/add");
+        router.push("/pages/section/add");
     }, [router]);
 
     const handleEdit = useCallback(
         (id) =>
-        router.push(`/pages/pengaturan-dasar/institusi/edit/${encryptIdUrl(id)}`),
+        router.push(`/pages/section/edit/${encryptIdUrl(id)}`),
         [router]
     );
 
     const handleToggle = useCallback(
         async (id) => {
-        const result = await SweetAlert({
-            title: "Disable Section",
-            text: "Are you sure you want to disable this section?",
-            icon: "warning",
-            confirmText: "Yes, disable it!",
-        });
 
-        if (!result) return;
+        const section = dataSectionRaw.find(item => item.id === id);
+        const isActive = section?.sectionStatus === 1;
+        
+        if (isActive) {
+            const result = await SweetAlert({
+                title: "Disable Section",
+                text: "Are you sure you want to disable this section?",
+                icon: "warning",
+                confirmText: "Yes, disable it!",
+            });
+
+            if (!result) return;
+        }
 
         setLoading(true);
 
@@ -219,7 +227,7 @@ export default function SectionPage() {
             setLoading(false);
         }
         },
-        [sortBy, search, sortStatus, loadData]
+        [sortBy, search, sortStatus, loadData, dataSectionRaw]
     );
 
     useEffect(() => {
@@ -260,11 +268,14 @@ export default function SectionPage() {
 
     return(
         <>
-            <h1>Sections Management</h1>
+            <Breadcrumb
+                title="Sections Management"
+                items={[]}
+            />
             <div>
                 <Formsearch
                     onSearch={handleSearch}
-                    // onAdd={handleAdd}
+                    onAdd={handleAdd}
                     onFilter={handleFilterApply}
                     searchPlaceholder="Search section data"
                     addButtonText="Add"

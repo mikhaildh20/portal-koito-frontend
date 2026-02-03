@@ -10,11 +10,27 @@ export default function Label({
   return (
     <label
       htmlFor={htmlFor}
-      className={`form-label fw-bold text-primary small mb-2 ${className}`}
+      className={`form-label fw-semibold mb-2 ${className}`}
       title={tooltip}
+      style={{
+        fontSize: "0.875rem",
+        color: "#495057",
+        letterSpacing: "0.2px",
+        display: "block",
+      }}
     >
       {text}
-      {required && <span className="text-danger ms-1">*</span>}
+      {required && (
+        <span 
+          className="text-danger ms-1"
+          style={{
+            fontSize: "1rem",
+            fontWeight: "600",
+          }}
+        >
+          *
+        </span>
+      )}
     </label>
   );
 }

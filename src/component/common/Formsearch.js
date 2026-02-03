@@ -58,7 +58,7 @@ export default function Formsearch({
         {showAddButton && (
           <div className="col-12 col-md-auto">
             <button
-              className="btn btn-primary w-100 w-md-auto d-flex align-items-center justify-content-center gap-2"
+              className="btn btn-success w-100 w-md-auto d-flex align-items-center justify-content-center gap-2"
               onClick={handleAdd}
             >
               <span className="fw-bold">+</span>
@@ -78,7 +78,7 @@ export default function Formsearch({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyPress}
               />
-              <button className="btn btn-primary" onClick={handleSearch}>
+              <button className="btn btn-success" onClick={handleSearch}>
                 <i className="bi bi-search"></i>
               </button>
             </div>
@@ -95,7 +95,7 @@ export default function Formsearch({
               )}
               {showExportButton && (
                 <button
-                  className="btn btn-primary flex-fill flex-md-grow-0 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-success flex-fill flex-md-grow-0 d-flex align-items-center justify-content-center gap-2"
                   onClick={handleExport}
                 >
                   <i className="bi bi-box-arrow-up"></i>
