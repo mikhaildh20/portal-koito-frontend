@@ -34,8 +34,8 @@ export default function SectionPage() {
     ];
 
     const dataFilterStatus = [
-        { Value: "1", Text: "Aktif" },
-        { Value: "0", Text: "Tidak Aktif" },
+        { Value: "1", Text: "Active" },
+        { Value: "0", Text: "Inactive" },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +44,6 @@ export default function SectionPage() {
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState(dataFilterSort[0].Value);
     const [sortStatus, setSortStatus] = useState(dataFilterStatus[0].Value);
-    const [orderCurrent, setOrderCurrent] = useState(dataOrder[0]?.Value || "");
 
     useEffect(() => {
         const fetchOrderData = async () => {
@@ -61,7 +60,6 @@ export default function SectionPage() {
 
                 const dataArray = response.data || [];
 
-                // mapping langsung dari angka
                 const mappedData = dataArray.map(num => ({
                     Value: num,
                     Text: `Order - ${num}`,
@@ -69,7 +67,6 @@ export default function SectionPage() {
 
                 setDataOrder(mappedData);
                 setIsOrderDataReady(true);
-                console.log("Mapped order data:", mappedData);
             } catch (err) {
                 Toast.error(err.message || "Failed to load order data");
                 setIsOrderDataReady(true);
@@ -81,29 +78,24 @@ export default function SectionPage() {
 
     const handleOrderChange = async (sectionId, newOrderValue) => {
         try {
-            // const response = await fetchData(
-            //     API_LINK + "Section/UpdateOrder",
-            //     {
-            //         id: sectionId,
-            //         order: newOrderValue
-            //     },
-            //     "POST" // atau "PUT" sesuai API lu
-            // );
-            
-            // if (response.error) {
-            //     throw new Error(response.message);
-            // }
+            const response = await fetchData(
+                API_LINK + "Section/UpdateOrder",
+                {
+                    orderId: sectionId,
+                    orderValue: newOrderValue
+                },
+                "POST"
+            );
 
-            console.log(`Order for section ID ${sectionId} updated to ${newOrderValue}`);
-            
-            Toast.success("Order updated successfully!");
-            
-            // Reload data to show updated order
-            loadData(currentPage, currentSort, currentSearch, currentStatus);
+            Toast.success(response.message || "Order updated successfully");
+
+            loadData(currentPage, sortBy, search, sortStatus);
+
         } catch (err) {
             Toast.error(err.message || "Failed to update order");
         }
     };
+
 
     const loadData = useCallback(async (page, sort, cari, status) => {
         try {
@@ -121,6 +113,8 @@ export default function SectionPage() {
                 "GET"
             );
 
+            console.log("Fetched section data:", response);
+
             if (response.error) {
                 throw new Error(response.message);
             }
@@ -132,13 +126,17 @@ export default function SectionPage() {
                 Name: item.sectionName,
                 Status: item.sectionStatus === 1 ? "Active" : "Inactive",
                 Order: (
+                <div className="d-flex justify-content-center align-items-center">
                     <DropDown 
-                        arrData={dataOrder}
-                        type="choose" 
-                        value={item.sectionOrder || item.order || ""} 
-                        onChange={(e) => handleOrderChange(item.id, e.target.value)} 
-                        showLabel={false}
+                    arrData={dataOrder}
+                    type="choose"
+                    value={item.sectionOrder || item.order || ""}
+                    onChange={(e) => handleOrderChange(item.id, e.target.value)}
+                    label="Order"
+                    showLabel={false}
+                    className="form-select w-auto text-center"
                     />
+                </div>
                 ),
                 Action: ["Edit", "Toggle"],
                 Alignment: ["center", "center", "center", "center", "center"],
@@ -188,10 +186,10 @@ export default function SectionPage() {
     const handleToggle = useCallback(
         async (id) => {
         const result = await SweetAlert({
-            title: "Nonaktifkan Data Institusi",
-            text: "Apakah Anda yakin ingin menonaktifkan data institusi ini?",
+            title: "Disable Section",
+            text: "Are you sure you want to disable this section?",
             icon: "warning",
-            confirmText: "Ya, saya yakin!",
+            confirmText: "Yes, disable it!",
         });
 
         if (!result) return;
@@ -200,16 +198,20 @@ export default function SectionPage() {
 
         try {
             const data = await fetchData(
-            API_LINK + "Institusi/SetStatusInstitusi/" + id,
-            {},
+            API_LINK + "Section/SetActive",
+            {
+                id: id,
+            },
             "POST"
             );
+
+            console.log("Toggle response data:", data);
 
             if (data.error) {
             throw new Error(data.message);
             }
 
-            Toast.success("Data status institusi berhasil diubah.");
+            Toast.success(data.message || "Section status updated successfully");
             loadData(1, sortBy, search, sortStatus);
         } catch (err) {
             Toast.error(err.message);
@@ -239,7 +241,7 @@ export default function SectionPage() {
             ref={sortRef}
             arrData={dataFilterSort}
             type="choose"
-            label="Urutkan"
+            label="Sorting"
             forInput="sortBy"
             defaultValue={sortBy}
             />

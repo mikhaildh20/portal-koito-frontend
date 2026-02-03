@@ -33,7 +33,7 @@ const SweetAlert = ({
       text: text,
       icon: icon,
       buttons: {
-        cancel: "Batal",
+        cancel: "Cancel",
         confirm: {
           text: confirmText,
           value: true,

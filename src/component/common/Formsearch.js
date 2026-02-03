@@ -9,12 +9,12 @@ export default function Formsearch({
   onSearch,
   onFilter,
   onExport,
-  searchPlaceholder = "Pencarian",
+  searchPlaceholder = "Search...",
   showAddButton = true,
   showSearchBar = true,
   showFilterButton = true,
   showExportButton = true,
-  addButtonText = "Tambah",
+  addButtonText = "Add",
   filterContent = null,
 }) {
   const [searchQuery, setSearchQuery] = useState("");

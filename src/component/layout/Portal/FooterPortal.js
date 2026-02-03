@@ -9,7 +9,7 @@ export default function FooterPortal() {
 
         {/* Right */}
         <div className="text-muted small">
-          Version <strong>1.0.0</strong> · Powered by IT Team
+          Version <strong>1.0.0</strong> · Developed by Mikhail — Intern, Astra Polytechnic
         </div>
       </div>
     </footer>
