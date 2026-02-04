@@ -17,7 +17,7 @@ export default function Breadcrumb({ title, items }) {
                 aria-current={index === items.length - 1 ? "page" : undefined}
                 >
                 {item.href ? (
-                    <Link href={item.href} className="text-decoration-none text-success">
+                    <Link href={item.href} className="text-decoration-none text-danger">
                     {item.label}
                     </Link>
                 ) : (

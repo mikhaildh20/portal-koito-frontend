@@ -77,7 +77,7 @@ export default function AddSectionPage() {
         );
 
         if (!data.error) {
-          Toast.success(data.messageDetail || "Section created successfully.");
+          Toast.success(data.message || "Section created successfully.");
           reset();
           router.push("/pages/section");
         } else {
@@ -135,7 +135,7 @@ export default function AddSectionPage() {
                 <Button
                     classType="success"
                     iconName={loading ? "" : "save"}
-                    label={loading ? "Menyimpan..." : "Simpan"}
+                    label={loading ? "Saving..." : "Save"}
                     type="submit"
                     isDisabled={loading}
                 />

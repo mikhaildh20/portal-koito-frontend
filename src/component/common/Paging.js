@@ -63,7 +63,7 @@ export default function Paging({
           key={page}
           className={`btn btn-sm mx-1 ${
             page === pageCurrent 
-              ? "btn-success shadow-sm" 
+              ? "btn-success shadow-sm text-white" // Tambahin text-white di sini
               : "btn-light text-secondary"
           }`}
           onClick={() => navigation(page)}
@@ -74,6 +74,7 @@ export default function Paging({
             borderRadius: "0.5rem",
             transition: "all 0.2s ease",
             border: page === pageCurrent ? "none" : "1px solid #e9ecef",
+            color: page === pageCurrent ? "#ffffff" : "#6c757d", // Explicitly set warna text
           }}
           onMouseEnter={(e) => {
             if (page !== pageCurrent) {

@@ -11,7 +11,6 @@ import fetchData from "@/lib/fetch";
 import { API_LINK } from "@/lib/constant";
 import { encryptIdUrl } from "@/lib/encryptor";
 import SweetAlert from "@/component/common/SweetAlert";
-import DateFormatter from "@/lib/dateFormater";
 import Breadcrumb from "@/component/common/Breadcrumb";
 
 export default function SectionPage() {
@@ -50,6 +49,8 @@ export default function SectionPage() {
     useEffect(() => {
         const fetchOrderData = async () => {
             try {
+                setIsOrderDataReady(false);
+                
                 const response = await fetchData(
                     API_LINK + "Section/GetOrder",
                     {},
@@ -71,6 +72,8 @@ export default function SectionPage() {
                 setIsOrderDataReady(true);
             } catch (err) {
                 Toast.error(err.message || "Failed to load order data");
+                setIsOrderDataReady(true);
+            } finally {
                 setIsOrderDataReady(true);
             }
         };
@@ -130,13 +133,14 @@ export default function SectionPage() {
                 Order: (
                 <div className="d-flex justify-content-center align-items-center">
                     <DropDown 
-                    arrData={dataOrder}
+                    arrData={dataOrder || []}
                     type="choose"
-                    value={item.sectionOrder || item.order || ""}
+                    value={item.sectionOrder || ""}
                     onChange={(e) => handleOrderChange(item.id, e.target.value)}
                     label="Order"
                     showLabel={false}
                     className="form-select w-auto text-center"
+                    isDisabled={!isOrderDataReady}
                     />
                 </div>
                 ),
@@ -154,7 +158,7 @@ export default function SectionPage() {
         } finally {
             setLoading(false);
         }
-    }, [pageSize, dataOrder]);
+    }, [pageSize, dataOrder, isOrderDataReady]);
 
     const handleSearch = useCallback((query) => {
         setSearch(query);

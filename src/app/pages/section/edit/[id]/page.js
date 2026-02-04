@@ -14,17 +14,11 @@ const maxLengthRules = {
   sectionName: 55,
 }
 
-const initialFormData = {
-  id: 0,
-  sectionName: "",
-  createdBy: 1,
-};
-
 export default function EditSectionPage() {
   const path = useParams();
   const router = useRouter();
   const id = decryptIdUrl(path.id);
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -38,12 +32,13 @@ export default function EditSectionPage() {
         "GET"
       );
 
+      const data = response.data;
+
       if (response) {
-        setFormData(prev => ({
-          ...prev,
+        setFormData({
           id: id,
-          sectionName: response.sectionName || "",
-        }));
+          sectionName: data.sectionName || "",
+        });
       } else {
         throw new Error("Section data not found.");
       }
@@ -90,5 +85,91 @@ export default function EditSectionPage() {
     return Object.keys(newErrors).length === 0;
   },[formData]);
 
-  return <div>Edit section page for ID: {path.id}</div>;
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      if (!validateForm()) {
+        Toast.error("Please fill in all required fields.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const data = await fetchData(
+          API_LINK + "Section/UpdateSection",
+          formData,
+          "PUT"
+        );
+
+        if (!data.error) {
+          Toast.success(data.message || "Section updated successfully.");
+          router.push("/pages/section");
+        } else {
+          Toast.error(data.message || "Error occured while updating section.");
+          setLoading(false);
+        }
+      } catch (err) {
+        Toast.error("Failed to update section! " + err.message);
+        setLoading(false);
+      }
+    },
+    [validateForm, formData, router]
+  );
+
+  const handleCancel = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  return (
+    <>
+      <Breadcrumb
+        title="Edit Section"
+        items={[
+          { label: "Sections Management", href: "/pages/section" },
+          { label: "Edit Section"},
+        ]}
+      />
+      <div className="card border-0 shadow-lg">
+        <div className="card-body p-4"> 
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-lg-4">
+                <Input
+                  label="Section Name"
+                  name="sectionName"
+                  id="sectionName"
+                  value={formData.sectionName}
+                  onChange={handleChange}
+                  error={errors.sectionName}
+                  maxLength={maxLengthRules.sectionName}
+                />
+              </div>
+            </div>
+            <div className="row mt-4">
+              <div className="col-12">
+                <div className="d-flex justify-content-end gap-2">
+                  <Button
+                    classType="secondary"
+                    label="Cancel"
+                    onClick={handleCancel}
+                    type="button"
+                    isDisabled={loading}
+                  />
+                  <Button
+                      classType="success"
+                      iconName={loading ? "" : "save"}
+                      label={loading ? "Saving..." : "Save"}
+                      type="submit"
+                      isDisabled={loading}
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
+  );
 }
