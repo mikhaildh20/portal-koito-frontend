@@ -293,7 +293,7 @@ export default function TitlePage() {
   return (
     <>
       <Breadcrumb
-        title="Title Management"
+        title="Titles Management"
         items={[]}
       />
       <div>

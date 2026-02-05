@@ -81,7 +81,7 @@ const fetchData = async (url, param = {}, method = "POST") => {
     } else if (err.request) {
       return {
         error: true,
-        message: "Tidak ada respons dari server. Cek jaringan.",
+        message: "No response from server. Check your network.",
       };
     } else {
       return { error: true, message: err.message };

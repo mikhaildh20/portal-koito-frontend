@@ -48,6 +48,75 @@ export default function ContentPage() {
   const [sortBy, setSortBy] = useState(dataFilterSort[0].Value);
   const [sortStatus, setSortStatus] = useState(dataFilterStatus[0].Value);
 
+  const getTitleByContentId = useCallback((contentId) => {
+    const rawItem = dataContentRaw.find(item => item.id === contentId);
+    return rawItem?.tleId || null;
+  },[dataContentRaw]);
+
+  const fetchOrderByTitle = useCallback(async (titleId) => {
+    if(orderCacheRef.current[titleId]){
+      return orderCacheRef.current[titleId];
+    }
+
+    try{
+      setLoadingOrders(prev => ({...prev, [titleId]: true }));
+
+      const response = await fetchData(
+        API_LINK + "Content/GetOrder",
+        { parentId: titleId },
+        "POST"
+      );
+
+      if(response.error){
+        throw new Error(response.message);
+      }
+
+      const mappedData = (response.data || []).map(num => ({
+        Value: num,
+        Text: `Order - ${num}`,
+      }));
+
+      orderCacheRef.current[titleId] = mappedData;
+      setOrderVersion(v => v + 1);
+
+      return mappedData;
+    }catch (err){
+      Toast.error(`Failed to load order title: ${err.message}`);
+      return[];
+    }finally{
+      setLoadingOrders(prev => ({...prev, [titleId]: false }));
+    }
+  }, []);
+
+  const loadOrdersForCurrentContents = useCallback(async (contents) => {
+    const titleIds = [...new Set(contents.map(c => c.tleId).filter(Boolean))];
+    await Promise.all(titleIds.map(fetchOrderByTitle));
+  }, [fetchOrderByTitle]);
+
+  const handleOrderChange = async (contentId, newOrderValue) => {
+    try{
+      const titleId = getTitleByContentId(contentId);
+
+      const response = await fetchData(
+        API_LINK + "Content/UpdateOrder",
+        {
+          orderId: contentId,
+          orderValue: newOrderValue
+        },
+        "POST"
+      );
+
+      Toast.success(response.message || "Order updated");
+
+      delete orderCacheRef.current[titleId];
+      setOrderVersion(v => v + 1);
+
+      loadData(currentPage, sortBy, search, sortStatus);
+    }catch(err){
+      Toast.error(err.message || "Failed to update order");
+    }
+  };
+
   const loadData = useCallback(async (page, sort, cari, status) => {
     try{
       setLoading(true);
@@ -57,14 +126,12 @@ export default function ContentPage() {
         {
           Status: status,
           ...(cari === "" ? {} : { Search: cari }),
-          Urut: sortBy,
+          Urut: sort,
           PageNumber: page,
           PageSize: pageSize,
         },
         "GET"
       );
-
-      console.log(response);
 
       setDataContentRaw(response.Data || []);
 
@@ -74,13 +141,25 @@ export default function ContentPage() {
 
       const {data, totalData} = response;
 
+      await loadOrdersForCurrentContents(data);
+
       const pagedData = data.map((item, index) => ({
         No: (page - 1) * pageSize + index + 1,
         id: item.id,
         Title: item.titleName,
         Content: item.contentName,
         Status: item.contentStatus === 1 ? "Active" : "Inactive",
-        Order: item.contentOrder,
+        Order: (
+          <div className="d-flex justify-content-center align-items-center">
+            <DropDown
+              arrData={orderCacheRef.current[item.tleId] || []}
+              value={item.contentOrder || ""}
+              onChange={(e) => handleOrderChange(item.id, e.target.value)}
+              className="form-select w-auto text-center"
+              isDisabled={loadingOrders[item.tleId]}
+            />
+          </div>
+        ),
         Action: ["Edit", "Toggle"],
         Alignment: ["center", "center", "center", "center", "center"]
       }))
@@ -95,7 +174,7 @@ export default function ContentPage() {
     }finally{
       setLoading(false);
     }
-  }, [pageSize]);
+  }, [pageSize, loadOrdersForCurrentContents]);
 
   const handleSearch = useCallback((query) => {
       setSearch(query);
@@ -208,7 +287,7 @@ export default function ContentPage() {
   return (
     <>
       <Breadcrumb
-        title="Content Management"
+        title="Contents Management"
         items={[]}
       />
       <div>

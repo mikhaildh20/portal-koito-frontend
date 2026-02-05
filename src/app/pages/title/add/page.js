@@ -22,7 +22,6 @@ export default function AddTitlePage() {
     createdBy: 1,
   });
   const [dataSectionList, setDataSectionList] = useState({});
-
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const router = useRouter();

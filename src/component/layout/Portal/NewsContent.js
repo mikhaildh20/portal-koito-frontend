@@ -39,7 +39,7 @@ export default function NewsContent({ contents }) {
               <td className="small">
                 {item.cteLink ? (
                   <a 
-                    href={item.cteLink} 
+                    href={`http://localhost:5230/Uploads/content/${item.cteLink}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-decoration-none"
