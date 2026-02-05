@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Input from "@/component/common/Input";
 import Button from "@/component/common/Button";
 import DropDown from "@/component/common/Dropdown";
@@ -21,14 +21,44 @@ export default function AddTitlePage() {
     titleType: "",
     createdBy: 1,
   });
+  const [dataSectionList, setDataSectionList] = useState({});
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchSectionList = async () => {
+      try{
+        const response = await fetchData(
+          API_LINK + "Title/GetList",
+          {},
+          "GET"
+        );
+
+        if(response.error){
+          throw new Error(response.message);
+        }
+
+        const dataJson = response.data || [];
+
+        const mappedData = dataJson.map((item) => ({
+          Value: item.id,
+          Text: item.name,
+        }));
+
+        setDataSectionList(mappedData);
+      }catch(err){
+        Toast.error(err.message || "Failed to fetch section list.");
+      }
+    };
+
+    fetchSectionList();
+  },[]);
+
   const dataType = [
-    { value: "News", Text: "News" },
-    { value: "Link", Text: "Link" },
+    { Value: "News", Text: "News" },
+    { Value: "Link", Text: "Link" },
   ];
 
   const handleChange = useCallback(
@@ -112,6 +142,7 @@ export default function AddTitlePage() {
   return (
     <>
       <Breadcrumb
+        title="Add Title"
         items={[
           { label: "Titles Management", href: "/pages/title" },
           { label: "Add Title"},
@@ -123,7 +154,7 @@ export default function AddTitlePage() {
             <div className="row">
               <div className="col-lg-4">
                 <DropDown
-                  arrData={[]}
+                  arrData={dataSectionList}
                   label="Section"
                   name="secId"
                   id="secId"

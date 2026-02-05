@@ -18,7 +18,9 @@ export default function EditSectionPage() {
   const path = useParams();
   const router = useRouter();
   const id = decryptIdUrl(path.id);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    sectionName: "",
+  });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 

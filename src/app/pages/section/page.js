@@ -20,7 +20,6 @@ export default function SectionPage() {
     const [dataOrder, setDataOrder] = useState([]);
     const [isOrderDataReady, setIsOrderDataReady] = useState(false);
     const [loading, setLoading] = useState(true);
-    const orderRef = useRef();
     const sortRef = useRef();
     const statusRef = useRef();
     const [isClient, setIsClient] = useState(false);
@@ -47,59 +46,63 @@ export default function SectionPage() {
     const [sortStatus, setSortStatus] = useState(dataFilterStatus[0].Value);
 
     useEffect(() => {
+        let mounted = true;
+
         const fetchOrderData = async () => {
             try {
-                setIsOrderDataReady(false);
-                
-                const response = await fetchData(
-                    API_LINK + "Section/GetOrder",
-                    {},
-                    "GET"
-                );
+            setIsOrderDataReady(false);
 
-                if (response.error) {
-                    throw new Error(response.message);
-                }
+            const response = await fetchData(
+                API_LINK + "Section/GetOrder",
+                {},
+                "GET"
+            );
 
-                const dataArray = response.data || [];
+            if (response.error) {
+                throw new Error(response.message);
+            }
 
-                const mappedData = dataArray.map(num => ({
-                    Value: num,
-                    Text: `Order - ${num}`,
-                }));
+            const mappedData = (response.data || []).map(num => ({
+                Value: num,
+                Text: `Order - ${num}`,
+            }));
 
+            if (mounted) {
                 setDataOrder(mappedData);
-                setIsOrderDataReady(true);
+            }
             } catch (err) {
-                Toast.error(err.message || "Failed to load order data");
-                setIsOrderDataReady(true);
+            Toast.error(err.message || "Failed to load order data");
             } finally {
+            if (mounted) {
                 setIsOrderDataReady(true);
+            }
             }
         };
 
         fetchOrderData();
-    }, []);
+        return () => { mounted = false; };
+        }, []);
+
 
     const handleOrderChange = async (sectionId, newOrderValue) => {
         try {
             const response = await fetchData(
-                API_LINK + "Section/UpdateOrder",
-                {
-                    orderId: sectionId,
-                    orderValue: newOrderValue
-                },
-                "POST"
+            API_LINK + "Section/UpdateOrder",
+            {
+                orderId: sectionId,
+                orderValue: newOrderValue
+            },
+            "POST"
             );
 
-            Toast.success(response.message || "Order updated successfully");
+            Toast.success(response.message || "Order updated");
 
             loadData(currentPage, sortBy, search, sortStatus);
-
         } catch (err) {
             Toast.error(err.message || "Failed to update order");
         }
     };
+
 
 
     const loadData = useCallback(async (page, sort, cari, status) => {
@@ -107,48 +110,46 @@ export default function SectionPage() {
             setLoading(true);
 
             const response = await fetchData(
-                API_LINK + "Section/GetAllSection",
-                {
-                    Status: status,
-                    ...(cari === "" ? {} : { Search: cari }),
-                    Urut: sort,
-                    PageNumber: page,
-                    PageSize: pageSize,
-                },
-                "GET"
+            API_LINK + "Section/GetAllSection",
+            {
+                Status: status,
+                ...(cari === "" ? {} : { Search: cari }),
+                Urut: sort,
+                PageNumber: page,
+                PageSize: pageSize,
+            },
+            "GET"
             );
+
+            if (response.error) {
+            throw new Error(response.message);
+            }
 
             setDataSectionRaw(response.data || []);
 
-            if (response.error) {
-                throw new Error(response.message);
-            }
-
             const { data, totalData } = response;
+
             const pagedData = data.map((item, index) => ({
-                No: (page - 1) * pageSize + index + 1,
-                id: item.id,
-                Name: item.sectionName,
-                Status: item.sectionStatus === 1 ? "Active" : "Inactive",
-                Order: (
+            No: (page - 1) * pageSize + index + 1,
+            id: item.id,
+            Name: item.sectionName,
+            Status: item.sectionStatus === 1 ? "Active" : "Inactive",
+            Order: (
                 <div className="d-flex justify-content-center align-items-center">
-                    <DropDown 
-                    arrData={dataOrder || []}
-                    type="choose"
+                <DropDown
+                    arrData={dataOrder}
                     value={item.sectionOrder || ""}
                     onChange={(e) => handleOrderChange(item.id, e.target.value)}
-                    label="Order"
-                    showLabel={false}
                     className="form-select w-auto text-center"
                     isDisabled={!isOrderDataReady}
-                    />
+                />
                 </div>
-                ),
-                Action: ["Edit", "Toggle"],
-                Alignment: ["center", "center", "center", "center", "center"],
+            ),
+            Action: ["Edit", "Toggle"],
+            Alignment: ["center", "center", "center", "center"],
             }));
 
-            setDataSection(pagedData || []);
+            setDataSection(pagedData);
             setTotalData(totalData || 0);
             setCurrentPage(page);
         } catch (err) {
@@ -158,7 +159,8 @@ export default function SectionPage() {
         } finally {
             setLoading(false);
         }
-    }, [pageSize, dataOrder, isOrderDataReady]);
+    }, [pageSize, isOrderDataReady]);
+
 
     const handleSearch = useCallback((query) => {
         setSearch(query);
@@ -216,8 +218,6 @@ export default function SectionPage() {
             },
             "POST"
             );
-
-            console.log("Toggle response data:", data);
 
             if (data.error) {
             throw new Error(data.message);

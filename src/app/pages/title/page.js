@@ -17,12 +17,12 @@ export default function TitlePage() {
   const router = useRouter();
   const [dataTitle, setDataTitle] = useState([]);
   const [dataTitleRaw, setDataTitleRaw] = useState([]);
-  const [dataOrderMap, setDataOrderMap] = useState({});
   const [loadingOrders, setLoadingOrders] = useState({});
   const [loading, setLoading] = useState(false);
-  const orderRef = useRef();
   const sortRef = useRef();
   const statusRef = useRef();
+  const orderCacheRef = useRef({});
+  const [orderVersion, setOrderVersion] = useState(0);
   const [isClient, setIsClient] = useState(false);
 
   const dataFilterSort = [
@@ -56,81 +56,71 @@ export default function TitlePage() {
   }, [dataTitleRaw]);
 
   const fetchOrderBySection = useCallback(async (sectionId) => {
-    if(dataOrderMap[sectionId]){
-      return dataOrderMap[sectionId];
+    if (orderCacheRef.current[sectionId]) {
+      return orderCacheRef.current[sectionId];
     }
 
-    try{
+    try {
       setLoadingOrders(prev => ({ ...prev, [sectionId]: true }));
-      
+
       const response = await fetchData(
         API_LINK + "Title/GetOrder",
-        {
-          parentId: sectionId,
-        },
+        { parentId: sectionId },
         "POST"
       );
 
-      console.log(response);
-
-      if(response.error){
+      if (response.error) {
         throw new Error(response.message);
       }
 
-      const dataArray = response.data || [];
-
-      const mappedData = dataArray.map(num => ({
+      const mappedData = (response.data || []).map(num => ({
         Value: num,
         Text: `Order - ${num}`,
       }));
 
-      setDataOrderMap(prev => ({
-        ...prev,
-        [sectionId]: mappedData
-      }));
+      orderCacheRef.current[sectionId] = mappedData;
+      setOrderVersion(v => v + 1);
 
       return mappedData;
-    }catch(err){
+    } catch (err) {
       Toast.error(`Failed to load order section: ${err.message}`);
       return [];
-    } finally{
+    } finally {
       setLoadingOrders(prev => ({ ...prev, [sectionId]: false }));
     }
-  }, [dataOrderMap]);
+  }, []);
 
-  const loadOrdersForCurrentTitles = useCallback(async(titles) => {
-    const sectionIds = [...new Set(titles.map(item => item.secId).filter(Boolean))];
 
-    const fetchPromises = sectionIds.map(sectionId => fetchOrderBySection(sectionId));
-    await Promise.all(fetchPromises);
+  const loadOrdersForCurrentTitles = useCallback(async (titles) => {
+    const sectionIds = [...new Set(titles.map(t => t.secId).filter(Boolean))];
+    await Promise.all(sectionIds.map(fetchOrderBySection));
   }, [fetchOrderBySection]);
 
+
   const handleOrderChange = async (titleId, newOrderValue) => {
-        try {
-            const sectionId = getSectionIdByTitleId(titleId);
+    try {
+      const sectionId = getSectionIdByTitleId(titleId);
 
-            const response = await fetchData(
-                API_LINK + "Title/UpdateOrder",
-                {
-                    orderId: titleId,
-                    orderValue: newOrderValue
-                },
-                "POST"
-            );
+      const response = await fetchData(
+        API_LINK + "Title/UpdateOrder",
+        {
+          orderId: titleId,
+          orderValue: newOrderValue
+        },
+        "POST"
+      );
 
-            Toast.success(response.message || "Order updated successfully");
+      Toast.success(response.message || "Order updated");
 
-            setDataOrderMap(prev => {
-              const newMap = { ...prev };
-              delete newMap[sectionId];
-              return newMap;
-            });
+      delete orderCacheRef.current[sectionId];
+      setOrderVersion(v => v + 1);
 
-            loadData(currentPage, sortBy, search, sortStatus);
-        } catch (err) {
-            Toast.error(err.message || "Failed to update order");
-        }
-    };
+      loadData(currentPage, sortBy, search, sortStatus);
+    } catch (err) {
+      Toast.error(err.message || "Failed to update order");
+    }
+  };
+
 
   const loadData = useCallback(async (page, sort, cari, status) => {
     try{
@@ -167,21 +157,18 @@ export default function TitlePage() {
         Status: item.titleStatus === 1 ? "Active" : "Inactive",
         Order: (
           <div className="d-flex justify-content-center align-items-center">
-            <DropDown 
-              arrData={dataOrderMap[item.secId] || []}
-              type="choose"
+            <DropDown
+              arrData={orderCacheRef.current[item.secId] || []}
               value={item.titleOrder || ""}
               onChange={(e) => handleOrderChange(item.id, e.target.value)}
-              label="Order"
-              showLabel={false}
               className="form-select w-auto text-center"
-              isDisabled={loadingOrders[item.secId] || false}
+              isDisabled={loadingOrders[item.secId]}
             />
           </div>
         ),
         Action: ["Edit", "Toggle"],
         Alignment: ["center", "center", "center", "center", "center", "center"],
-      }))
+      }));
 
       setDataTitle(pagedData || []);
       setTotalData(totalData || 0);
@@ -251,8 +238,6 @@ export default function TitlePage() {
             },
             "POST"
             );
-
-            console.log("Toggle response data:", data);
 
             if (data.error) {
             throw new Error(data.message);
