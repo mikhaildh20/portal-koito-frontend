@@ -84,6 +84,22 @@ export default function AddContentPage() {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0];
+    
+    if (selectedFile) {
+      const maxSize = 5 * 1024 * 1024;
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+      
+      if (selectedFile.size > maxSize) {
+        Toast.error("File size exceeds 5MB limit");
+        return;
+      }
+      
+      if (!allowedTypes.includes(selectedFile.type)) {
+        Toast.error("Only PDF and image files are allowed");
+        return;
+      }
+    }
+    
     setFile(selectedFile || null);
   };
 
@@ -103,9 +119,23 @@ export default function AddContentPage() {
       }
     }
 
+    if (type !== "News") {
+      const link = formData.contentLink?.trim();
+      
+      if (!link) {
+        newErrors.contentLink = "Content link is required.";
+      } else {
+        const urlRegex = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+        
+        if (!urlRegex.test(link)) {
+          newErrors.contentLink = "Please enter a valid URL";
+        }
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  },[formData]);
+  }, [formData, type]);
 
   const reset = useCallback(() => {
     setFormData({
@@ -121,18 +151,22 @@ export default function AddContentPage() {
     const fd = new FormData();
     fd.append("file", file);
 
-    const res = await fetch(API_LINK + "Content/UploadFileContent", {
-      method: "POST",
-      body: fd,
-    });
+    try {
+      const res = await fetch(API_LINK + "Content/UploadFileContent", {
+        method: "POST",
+        body: fd,
+      });
 
-    const json = await res.json();
+      const json = await res.json();
 
-    if (!res.ok || json.error) {
-      throw new Error(json.message || "Upload file failed");
+      if (!res.ok || json.error) {
+        throw new Error(json.message || `Upload failed with status ${res.status}`);
+      }
+
+      return json;
+    } catch (err) {
+      throw new Error(`File upload error: ${err.message}`);
     }
-
-    return json;
   };
 
 
