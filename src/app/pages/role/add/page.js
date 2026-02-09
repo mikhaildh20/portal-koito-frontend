@@ -124,6 +124,37 @@ export default function AddRolePage() {
                 maxLength={maxLengthRules.roleName}
               />
             </div>
+            <div className="col-lg-4">
+              <Input 
+                label="Role Desc"
+                name="roleDesc"
+                id="roleDesc"
+                value={formData.roleDesc}
+                onChange={handleChange}
+                error={errors.roleDesc}
+                maxLength={maxLengthRules.roleDesc}
+              />
+            </div>
+          </div>
+          <div className="row mt-4">
+            <div className="col-12">
+              <div className="d-flex justify-content-end gap-2">
+                <Button
+                  classType="secondary"
+                  label="Cancel"
+                  onClick={handleCancel}
+                  type="button"
+                  isDisabled={loading}
+                />
+                <Button
+                    classType="success"
+                    iconName={loading ? "" : "save"}
+                    label={loading ? "Saving..." : "Save"}
+                    type="submit"
+                    isDisabled={loading}
+                />
+              </div>
+            </div>
           </div>
         </form>
       </div>
