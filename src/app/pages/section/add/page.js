@@ -53,7 +53,7 @@ export default function AddSectionPage() {
   },[formData]);
 
   const reset = useCallback(() => {
-    setFormData({
+      setFormData({
       sectionName: "",
     });
   },[]);

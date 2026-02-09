@@ -46,7 +46,7 @@ export default function Table({
     return cols;
   }, [data, enableCheckbox]);
 
-  if (!data || data.length === 0) return <p>Tidak ada data.</p>;
+  if (!data || data.length === 0) return <p>No data.</p>;
 
   const selectableItems = data.filter((item) => isRowSelectable(item));
   const isAllSelected =

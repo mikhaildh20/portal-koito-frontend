@@ -1,3 +1,16 @@
+import { FILE_LINK } from "@/lib/constant";
+
+const isThisMonth = (date) => {
+  const now = new Date();
+  const d = new Date(date);
+
+  return (
+    d.getMonth() === now.getMonth() &&
+    d.getFullYear() === now.getFullYear()
+  );
+};
+
+
 export default function NewsContent({ contents }) {
   if (!contents.length) {
     return (
@@ -37,19 +50,33 @@ export default function NewsContent({ contents }) {
                 {new Date(item.cteDate).toLocaleDateString('id-ID')}
               </td>
               <td className="small">
-                {item.cteLink ? (
-                  <a 
-                    href={`http://localhost:5230/Uploads/content/${item.cteLink}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-decoration-none"
-                  >
-                    {item.cteName}
-                  </a>
-                ) : (
-                  item.cteName
-                )}
-              </td>
+              {item.cteLink ? (
+                <a 
+                  href={`${FILE_LINK}${item.cteLink}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-decoration-none d-inline-flex align-items-center gap-2"
+                >
+                  {item.cteName}
+
+                  {isThisMonth(item.cteDate) && (
+                    <span className="badge bg-danger small">
+                      NEW
+                    </span>
+                  )}
+                </a>
+              ) : (
+                <span className="d-inline-flex align-items-center gap-2">
+                  {item.cteName}
+
+                  {isThisMonth(item.cteDate) && (
+                    <span className="badge bg-danger small">
+                      NEW
+                    </span>
+                  )}
+                </span>
+              )}
+            </td>
             </tr>
           ))}
         </tbody>
