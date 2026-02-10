@@ -3,9 +3,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Sidebar({ isOpen, onToggle }) {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const menu = [
     { 
@@ -18,7 +20,8 @@ export default function Sidebar({ isOpen, onToggle }) {
           <rect x="14" y="14" width="7" height="7"></rect>
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
-      )
+      ),
+      roles: ["Super-Admin", "Content-Editor"]
     },
     { 
       name: "Section", 
@@ -28,7 +31,8 @@ export default function Sidebar({ isOpen, onToggle }) {
           <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
           <polyline points="13 2 13 9 20 9"></polyline>
         </svg>
-      )
+      ),
+      roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
     },
     { 
       name: "Title", 
@@ -40,7 +44,8 @@ export default function Sidebar({ isOpen, onToggle }) {
           <line x1="10" y1="3" x2="8" y2="21"></line>
           <line x1="16" y1="3" x2="14" y2="21"></line>
         </svg>
-      )
+      ),
+      roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
     },
     { 
       name: "Content", 
@@ -53,7 +58,8 @@ export default function Sidebar({ isOpen, onToggle }) {
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-      )
+      ),
+      roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
     },
     { 
       name: "Role", 
@@ -63,21 +69,20 @@ export default function Sidebar({ isOpen, onToggle }) {
           <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
           <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
         </svg>
-      )
-    },
-    { 
-      name: "Users", 
-      path: "/pages/user",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-      )
+      ),
+      roles: ["Super-Admin"]
     },
   ];
+
+  // ✅ Filter menu berdasarkan role user
+  const visibleMenu = menu.filter(item => 
+    item.roles.includes(user?.role)
+  );
+
+  // Helper function untuk cek apakah user punya akses
+  const hasAccess = (roles) => {
+    return roles.includes(user?.role);
+  };
 
   return (
     <>
@@ -91,7 +96,7 @@ export default function Sidebar({ isOpen, onToggle }) {
       )}
 
       <aside
-        className="bg-dark text-white position-fixed position-lg-relative h-100"
+        className="bg-dark text-white position-fixed position-lg-relative h-100 d-flex flex-column"
         style={{
           width: "260px",
           transition: "transform 0.3s ease-in-out",
@@ -129,10 +134,10 @@ export default function Sidebar({ isOpen, onToggle }) {
           </div>
         </div>
 
-        {/* Menu */}
-        <nav className="p-3">
+        {/* Menu - ✅ Hanya tampilkan menu yang sesuai role */}
+        <nav className="flex-grow-1 overflow-auto p-3">
           <ul className="nav flex-column gap-1">
-            {menu.map((item) => {
+            {visibleMenu.map((item) => {
               const isActive = pathname === item.path;
               return (
                 <li key={item.path} className="nav-item">
@@ -168,9 +173,9 @@ export default function Sidebar({ isOpen, onToggle }) {
           </ul>
         </nav>
 
-        {/* Footer Sidebar */}
-        <div className="position-absolute bottom-0 w-100 p-3 border-top border-secondary">
-          <div className="text-center">
+        {/* Footer Sidebar dengan Logout Button - NEW */}
+        <div className="border-top border-secondary">
+          <div className="text-center pb-3">
             <small className="text-secondary d-block">Version 1.0.0</small>
           </div>
         </div>
@@ -185,6 +190,25 @@ export default function Sidebar({ isOpen, onToggle }) {
         .hover-bg-secondary:hover {
           background-color: rgba(255, 255, 255, 0.1) !important;
           color: #fff !important;
+        }
+        
+        /* Custom scrollbar untuk menu */
+        nav::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        nav::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 3px;
+        }
+        
+        nav::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 3px;
+        }
+        
+        nav::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
         }
       `}</style>
     </>

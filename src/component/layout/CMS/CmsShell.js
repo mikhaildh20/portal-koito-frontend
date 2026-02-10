@@ -1,14 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
+import Loading from "@/component/common/Loading";
 
 export default function CmsShell({ children }) {
+  const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
+
+  const isAuthPage = [
+    '/pages/auth/login',
+    '/pages/auth/unauthorized',
+  ].includes(pathname);
 
   useEffect(() => {
     setHasMounted(true);
@@ -25,15 +33,42 @@ export default function CmsShell({ children }) {
   }, []);
 
   if (!hasMounted) {
+    return <Loading loading={!hasMounted} message="Loading data..." />;
+  }
+
+  // Kalo auth page, render children aja tanpa shell
+  if (isAuthPage) {
     return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
+      <>
+        {children}
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              borderRadius: "12px",
+              padding: "12px 16px",
+              fontSize: "14px",
+            },
+            success: {
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#fff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#fff',
+              },
+            },
+          }}
+        />
+      </>
     );
   }
 
+  // Render normal dengan shell
   return (
     <>
       <div className="d-flex min-vh-100 bg-light position-relative">
@@ -47,8 +82,6 @@ export default function CmsShell({ children }) {
           <Footer />
         </div>
       </div>
-      
-      {/* Toaster Component */}
       <Toaster 
         position="top-right"
         toastOptions={{

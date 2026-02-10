@@ -9,13 +9,14 @@ import fetchData from "@/lib/fetch";
 import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import { decryptIdUrl } from "@/lib/encryptor";
+import withAuth from "@/component/withAuth";
 
 const maxLengthRules = {
   roleName: 30,
   roleDesc: 100,
 }
 
-export default function EditRolePage() {
+function EditRolePage() {
   const path = useParams();
   const router = useRouter();
   const id = decryptIdUrl(path.id);
@@ -190,3 +191,5 @@ export default function EditRolePage() {
     </>
   );
 }
+
+export default withAuth(EditRolePage, ["Super-Admin"]);

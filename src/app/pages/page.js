@@ -1,7 +1,10 @@
+"use client";
+
 import Breadcrumb from "@/component/common/Breadcrumb";
 import PortalContent from "@/component/layout/Portal/PortalContent";
+import withAuth from "@/component/withAuth";
 
-export default function PreviewPage() {
+function PreviewPage() {
   return (
     <>
       <Breadcrumb 
@@ -21,3 +24,5 @@ export default function PreviewPage() {
     </>
   );
 }
+
+export default withAuth(PreviewPage);

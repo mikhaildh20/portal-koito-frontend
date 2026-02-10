@@ -10,12 +10,13 @@ import fetchData from "@/lib/fetch";
 import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import { decryptIdUrl } from "@/lib/encryptor";
+import withAuth from "@/component/withAuth";
 
 const maxLengthRules = {
   contentName: 55,
 }
 
-export default function EditContentPage() {
+function EditContentPage() {
   const path = useParams();
   const id = decryptIdUrl(path.id);
   const [formData, setFormData] = useState({
@@ -349,3 +350,5 @@ export default function EditContentPage() {
     </>
   );
 }
+
+export default withAuth(EditContentPage, ["Content-Editor"]);

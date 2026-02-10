@@ -12,8 +12,10 @@ import { API_LINK } from "@/lib/constant";
 import { encryptIdUrl } from "@/lib/encryptor";
 import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import Loading from "@/component/common/Loading";
+import withAuth from "@/component/withAuth";
 
-export default function ContentPage() {
+function ContentPage() {
   const router = useRouter();
   const [dataContent, setDataContent] = useState([]);
   const [dataContentRaw, setDataContentRaw] = useState([]);
@@ -286,6 +288,7 @@ export default function ContentPage() {
 
   return (
     <>
+      <Loading loading={loading} message="Loading data..." />
       <Breadcrumb
         title="Contents Management"
         items={[]}
@@ -322,3 +325,5 @@ export default function ContentPage() {
     </>
   );
 }
+
+export default withAuth(ContentPage, ["Content-Editor"]);

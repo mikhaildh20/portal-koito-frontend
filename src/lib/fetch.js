@@ -2,20 +2,23 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const JWT_TOKEN_KEY = "jwtToken";
-const UNAUTHORIZED_PAGE = "/auth/unauthorized";
+const USER_DATA_KEY = "userData";
+const UNAUTHORIZED_PAGE = "/pages/auth/unauthorized";
+const LOGIN_PAGE = "/pages/auth/login";
 
 const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
   (config) => {
-    // const jwtToken = Cookies.get(JWT_TOKEN_KEY);
-    // if (jwtToken) {
-    //   config.headers.Authorization = `Bearer ${jwtToken}`;
-    // }
+    const jwtToken = Cookies.get(JWT_TOKEN_KEY);
+    if (jwtToken) {
+      config.headers.Authorization = `Bearer ${jwtToken}`;
+    }
     return config;
   },
   (error) => {
@@ -31,7 +34,14 @@ apiClient.interceptors.response.use(
     if (error.response) {
       const { status } = error.response;
 
-      if (status === 403 || status === 401) {
+      if (status === 401) {
+        Cookies.remove(JWT_TOKEN_KEY);
+        Cookies.remove(USER_DATA_KEY);
+        
+        if (globalThis.window !== undefined) {
+          globalThis.location.href = LOGIN_PAGE;
+        }
+      } else if (status === 403) {
         if (globalThis.window !== undefined) {
           globalThis.location.href = UNAUTHORIZED_PAGE;
         }
@@ -61,7 +71,7 @@ const fetchData = async (url, param = {}, method = "POST") => {
         response = await apiClient.delete(url, { data: param });
         break;
       default:
-        throw new Error(`Metode tidak didukung: ${method}`);
+        throw new Error(`Metode not supported: ${method}`);
     }
     return response.data;
   } catch (err) {
@@ -90,3 +100,4 @@ const fetchData = async (url, param = {}, method = "POST") => {
 };
 
 export default fetchData;
+export { JWT_TOKEN_KEY, USER_DATA_KEY };

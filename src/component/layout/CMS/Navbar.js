@@ -1,9 +1,26 @@
 // /src/component/layout/cms/Navbar.jsx
 "use client";
 
+import SweetAlert from "@/component/common/SweetAlert";
+import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 
 export default function Navbar({ onToggleSidebar }) {
+  const { user, logout } = useAuth();
+
+  const handleLogout = async (e) => {
+    const result = await SweetAlert({
+      title: "Logout",
+      text: "Are you sure want to logout?",
+      icon: "warning",
+      confirmText: "Yes, please."
+    });
+
+    if(!result) return;
+
+    logout();
+  };
+
   return (
     <nav 
       className="navbar navbar-light bg-white border-bottom px-4 sticky-top"
@@ -53,8 +70,8 @@ export default function Navbar({ onToggleSidebar }) {
         {/* User Info */}
         <div className="d-none d-md-flex align-items-center gap-3">
           <div className="text-end">
-            <div className="fw-semibold" style={{ fontSize: "0.875rem" }}>Admin User</div>
-            <small className="text-muted">Administrator</small>
+            <div className="fw-semibold" style={{ fontSize: "0.875rem" }}>{user?.username}</div>
+            <small className="text-muted">{user?.role}</small>
           </div>
           <div 
             className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
@@ -70,6 +87,7 @@ export default function Navbar({ onToggleSidebar }) {
         {/* Logout Button - Styled */}
         <button 
           className="btn btn-outline-danger btn-sm"
+          onClick={handleLogout}
           style={{
             padding: "0.5rem 1.25rem",
             borderRadius: "6px",

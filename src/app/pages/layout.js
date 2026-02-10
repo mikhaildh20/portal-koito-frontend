@@ -1,5 +1,12 @@
 import CmsShell from "@/component/layout/CMS/CmsShell";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function PagesLayout({ children }) {
-  return <CmsShell>{children}</CmsShell>;
+  return (
+    <AuthProvider>
+      <CmsShell>
+        {children}
+      </CmsShell>
+    </AuthProvider>
+  );
 }

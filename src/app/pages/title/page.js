@@ -12,8 +12,10 @@ import { API_LINK } from "@/lib/constant";
 import { encryptIdUrl } from "@/lib/encryptor";
 import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import Loading from "@/component/common/Loading";
+import withAuth from "@/component/withAuth";
 
-export default function TitlePage() {
+function TitlePage() {
   const router = useRouter();
   const [dataTitle, setDataTitle] = useState([]);
   const [dataTitleRaw, setDataTitleRaw] = useState([]);
@@ -292,6 +294,7 @@ export default function TitlePage() {
 
   return (
     <>
+      <Loading loading={loading} message="Loading data..." />
       <Breadcrumb
         title="Titles Management"
         items={[]}
@@ -328,3 +331,5 @@ export default function TitlePage() {
     </>
   );
 }
+
+export default withAuth(TitlePage, ["Content-Editor"]);

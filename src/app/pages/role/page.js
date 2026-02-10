@@ -12,8 +12,10 @@ import { API_LINK } from "@/lib/constant";
 import { encryptIdUrl } from "@/lib/encryptor";
 import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import Loading from "@/component/common/Loading";
+import withAuth from "@/component/withAuth";
 
-export default function RolePage() {
+function RolePage() {
     const router = useRouter();
     const [dataRole, setDataRole] = useState([]);
     const [dataRoleRaw, setDataRoleRaw] = useState([]);
@@ -194,6 +196,7 @@ export default function RolePage() {
 
   return (
     <>
+      <Loading loading={loading} message="Loading data..." />
       <Breadcrumb
         title="Roles Management"
         items={[]}
@@ -230,3 +233,5 @@ export default function RolePage() {
     </>
   );
 }
+
+export default withAuth(RolePage, ["Super-Admin"]);

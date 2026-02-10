@@ -9,17 +9,20 @@ import { API_LINK } from "@/lib/constant";
 import fetchData from "@/lib/fetch";
 import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import withAuth from "@/component/withAuth";
+import { useAuth } from "@/context/AuthContext";
 
 const maxLengthRules = {
   titleName: 55,
 }
 
-export default function AddTitlePage() {
+function AddTitlePage() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     secId: "",
     titleName: "",
     titleType: "",
-    createdBy: 1,
+    createdBy: user?.userId,
   });
   const [dataSectionList, setDataSectionList] = useState({});
   const [loading, setLoading] = useState(false);
@@ -211,3 +214,5 @@ export default function AddTitlePage() {
     </>
   );
 }
+
+export default withAuth(AddTitlePage, ["Content-Editor"]);

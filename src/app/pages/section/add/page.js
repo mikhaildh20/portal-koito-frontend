@@ -8,15 +8,18 @@ import { API_LINK } from "@/lib/constant";
 import fetchData from "@/lib/fetch";
 import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import withAuth from "@/component/withAuth";
+import { useAuth } from "@/context/AuthContext";
 
 const maxLengthRules = {
   sectionName: 55,
 }
 
-export default function AddSectionPage() {
+function AddSectionPage() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     sectionName: "",
-    createdBy: 1,
+    createdBy: user?.userId,
   });
 
   const [loading, setLoading] = useState(false);
@@ -148,3 +151,5 @@ export default function AddSectionPage() {
   </>
   );
 }
+
+export default withAuth(AddSectionPage, ["Content-Editor"]);

@@ -9,12 +9,13 @@ import fetchData from "@/lib/fetch";
 import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import { decryptIdUrl } from "@/lib/encryptor";
+import withAuth from "@/component/withAuth";
 
 const maxLengthRules = {
   sectionName: 55,
 }
 
-export default function EditSectionPage() {
+function EditSectionPage() {
   const path = useParams();
   const router = useRouter();
   const id = decryptIdUrl(path.id);
@@ -175,3 +176,5 @@ export default function EditSectionPage() {
     </>
   );
 }
+
+export default withAuth(EditSectionPage, ["Content-Editor"]);

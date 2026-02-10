@@ -9,17 +9,20 @@ import { API_LINK } from "@/lib/constant";
 import fetchData from "@/lib/fetch";
 import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import withAuth from "@/component/withAuth";
+import { useAuth } from "@/context/AuthContext";
 
 const maxLengthRules = {
   contentName: 55,
 }
 
-export default function AddContentPage() {
+function AddContentPage() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     tleId: "",
     contentName: "",
     contentLink: "",
-    createdBy: 1
+    createdBy: user?.userId
   });
   const [file, setFile] = useState(null);
 
@@ -313,3 +316,5 @@ export default function AddContentPage() {
     </>
   );
 }
+
+export default withAuth(AddContentPage, ["Content-Editor"]);

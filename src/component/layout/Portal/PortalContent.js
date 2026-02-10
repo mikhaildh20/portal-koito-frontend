@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import fetchData from "@/lib/fetch";
 import Section from "@/component/layout/Portal/Section";
 import { API_LINK } from "@/lib/constant";
+import Loading from '@/component/common/Loading';
 
 export default function PortalContent() {
     const [data, setData] = useState([]);
@@ -22,10 +23,7 @@ export default function PortalContent() {
 
     if (loading) {
         return (
-        <div className="text-center py-5">
-            <div className="spinner-border text-primary" />
-            <p className="mt-3 text-muted">loading data...</p>
-        </div>
+        <Loading loading={loading} message="Loading data..." />
         );
     }
 

@@ -1,0 +1,76 @@
+"use client";
+
+import { createContext, useContext, useState, useEffect, Children } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { JWT_TOKEN_KEY, USER_DATA_KEY } from "@/lib/fetch";
+import { Toast } from "bootstrap/dist/js/bootstrap.bundle.min";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({children}) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const userData = Cookies.get(USER_DATA_KEY);
+        if(userData){
+            try{
+                setUser(JSON.parse(userData));
+            }catch(err){
+                Toast.error("Failed to parse user data: ", error);
+                logout();
+            }
+        }
+        setLoading(false);
+    },[]);
+
+    const login = (token, userData) => {
+        Cookies.set(JWT_TOKEN_KEY, token, { expires: 7, secure: true });
+        Cookies.set(USER_DATA_KEY, JSON.stringify(userData), { 
+            expires: 7, 
+            secure: true 
+        });
+        setUser(userData);
+    };
+
+    const logout = () => {
+        Cookies.remove(JWT_TOKEN_KEY);
+        Cookies.remove(USER_DATA_KEY);
+        setUser(null);
+        router.push("/pages/auth/login");
+    };
+
+    const hasRole = (role) => {
+        return user?.role?.toLowerCase() === role.toLowerCase();
+    };
+
+    const isSuperAdmin = () => hasRole("Super-Admin");
+    const isEditor = () => hasRole("Content-Editor");
+
+    return(
+        <AuthContext.Provider
+            value={{
+                user,
+                loading,
+                login,
+                logout,
+                hasRole,
+                isSuperAdmin,
+                isEditor,
+                isAuthenticated: !!user,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within AuthProvider");
+    }
+    return context;
+};

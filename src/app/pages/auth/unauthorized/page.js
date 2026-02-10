@@ -1,9 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import Button from "@/component/common/Button";
 
 export default function UnauthorizedPage() {
   const router = useRouter();
+  const { logout } = useAuth();
+  
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
       <div className="container">
@@ -23,46 +27,27 @@ export default function UnauthorizedPage() {
                     <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
                   </svg>
                 </div>
-
-                {/* Error Code */}
                 <h1 className="display-1 fw-bold text-danger mb-3">401</h1>
-
-                {/* Title */}
                 <h2 className="h3 fw-semibold mb-3">Unauthorized Access</h2>
-
-                {/* Description */}
                 <p className="text-muted mb-4">
                   Sorry, you don't have permission to access this page. Please
                   ensure you're logged in with the appropriate credentials.
                 </p>
 
-                {/* Action Buttons */}
                 <div className="d-flex gap-3 justify-content-center flex-wrap">
-                  <button
+                  <Button
+                    classType="outline-secondary px-4"
+                    iconName="arrow-left"
+                    label="Go Back"
                     onClick={() => router.back()}
-                    className="btn btn-outline-secondary px-4"
-                  >
-                    <i className="bi bi-arrow-left me-2"></i>
-                    Go Back
-                  </button>
-                  <a href="/pages" className="btn btn-primary px-4">
-                    <i className="bi bi-house-door me-2"></i>
-                    Home Page
-                  </a>
-                  <a href="/pages/auth/login" className="btn btn-success px-4">
-                    <i className="bi bi-box-arrow-in-right me-2"></i>
-                    Login
-                  </a>
-                </div>
-
-                {/* Additional Help */}
-                <div className="mt-5 pt-4 border-top">
-                  <p className="text-muted small mb-2">
-                    Need assistance?
-                  </p>
-                  <a href="/contact" className="text-decoration-none">
-                    Contact Support
-                  </a>
+                  />
+                  
+                  <Button
+                    classType="danger px-4"
+                    iconName="house-door"
+                    label="Logout"
+                    onClick={logout}
+                  />
                 </div>
               </div>
             </div>

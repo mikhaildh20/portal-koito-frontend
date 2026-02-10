@@ -2,15 +2,21 @@
 
 import { useState } from 'react';
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Input from '@/component/common/Input';
 import Button from '@/component/common/Button';
+import toast from 'react-hot-toast';
+import fetchData from '@/lib/fetch';
+import { API_LINK } from '@/lib/constant';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -24,13 +30,43 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Login attempt:', formData);
+
+    try {
+      const response = await fetchData(
+        API_LINK + "Auth/Login",
+        {
+          username: formData.username,
+          password: formData.password,
+        },
+        "POST"
+      );
+
+      console.log(response);
+
+      if (response.error) {
+        toast.error(response.message || "Login failed");
+        setIsLoading(false);
+        return;
+      }
+
+      // Assuming backend returns: { token, userId, username, role }
+      const { token, userId, username: userName, role } = response;
+      
+      login(
+        token, 
+        {
+          userId,
+          username: userName,
+          role,
+        }
+      );
+
+      toast.success("Login successful!");
+      router.push("/pages");
+    } catch (err) {
+      toast.error("An unexpected error occurred");
       setIsLoading(false);
-      // Add your login logic here
-    }, 1500);
+    }
   };
 
   return (
@@ -59,6 +95,7 @@ export default function LoginPage() {
                   <div className="mb-3">
                     <Input
                       label="Username"
+                      name="username"
                       value={formData.username}
                       placeholder="Username"
                       onChange={handleChange}
@@ -68,20 +105,21 @@ export default function LoginPage() {
                   <div className="mb-3">
                     <Input
                       label="Password"
+                      name="password"
                       value={formData.password}
                       placeholder="Password"
                       type="password"
                       onChange={handleChange}
                     />
                   </div>
+                  
                   <Button
-                      classType="success w-100 py-2 fw-semibold"
-                      iconName={isLoading ? "" : "login"}
-                      label={isLoading ? "Logging..." : "Login"}
-                      type="submit"
-                      isDisabled={isLoading}
+                    classType="success w-100 py-2 fw-semibold"
+                    iconName={isLoading ? "" : "box-arrow-in-right"}
+                    label={isLoading ? "Logging in..." : "Login"}
+                    type="submit"
+                    isDisabled={isLoading}
                   />
-
                 </form>
               </div>
             </div>

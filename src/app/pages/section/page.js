@@ -12,8 +12,10 @@ import { API_LINK } from "@/lib/constant";
 import { encryptIdUrl } from "@/lib/encryptor";
 import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
+import Loading from "@/component/common/Loading";
+import withAuth from "@/component/withAuth";
 
-export default function SectionPage() {
+function SectionPage() {
     const router = useRouter();
     const [dataSection, setDataSection] = useState([]);
     const [dataSectionRaw, setDataSectionRaw] = useState([]);
@@ -272,6 +274,7 @@ export default function SectionPage() {
 
     return(
         <>
+            <Loading loading={loading} message="Loading data..." />
             <Breadcrumb
                 title="Sections Management"
                 items={[]}
@@ -308,3 +311,5 @@ export default function SectionPage() {
         </>
     );
 }
+
+export default withAuth(SectionPage, ["Content-Editor"]);
