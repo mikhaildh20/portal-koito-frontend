@@ -2,6 +2,7 @@
 "use client";
 
 import SweetAlert from "@/component/common/SweetAlert";
+import toast from 'react-hot-toast';
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 
@@ -29,6 +30,7 @@ export default function Navbar({ onToggleSidebar }) {
     if(!result) return;
 
     logout();
+    toast.success("Logout successfully.");
   };
 
   return (

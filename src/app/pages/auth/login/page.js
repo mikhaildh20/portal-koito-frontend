@@ -49,7 +49,6 @@ export default function LoginPage() {
         return;
       }
 
-      // Assuming backend returns: { token, userId, username, role }
       const { token, userId, username: userName, role } = response;
       
       login(
