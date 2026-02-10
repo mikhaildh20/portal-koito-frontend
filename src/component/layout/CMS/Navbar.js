@@ -8,6 +8,16 @@ import Image from "next/image";
 export default function Navbar({ onToggleSidebar }) {
   const { user, logout } = useAuth();
 
+  const username = user?.username?.toUpperCase() || "";
+
+  const initials = username
+    .split(" ")
+    .filter(Boolean)
+    .map(word => word[0])
+    .slice(0, 2)
+    .join("");
+
+
   const handleLogout = async (e) => {
     const result = await SweetAlert({
       title: "Logout",
@@ -70,14 +80,14 @@ export default function Navbar({ onToggleSidebar }) {
         {/* User Info */}
         <div className="d-none d-md-flex align-items-center gap-3">
           <div className="text-end">
-            <div className="fw-semibold" style={{ fontSize: "0.875rem" }}>{user?.username}</div>
+            <div className="fw-semibold" style={{ fontSize: "0.875rem" }}>{username}</div>
             <small className="text-muted">{user?.role}</small>
           </div>
           <div 
             className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
             style={{ width: "40px", height: "40px", fontSize: "0.875rem", fontWeight: "600" }}
           >
-            AU
+            {initials || "?"}
           </div>
         </div>
 

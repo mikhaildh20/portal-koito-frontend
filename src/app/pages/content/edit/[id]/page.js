@@ -351,4 +351,4 @@ function EditContentPage() {
   );
 }
 
-export default withAuth(EditContentPage, ["Content-Editor"]);
+export default withAuth(EditContentPage, ["Content-Editor", "Super-Admin"]);

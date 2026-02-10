@@ -312,4 +312,4 @@ function SectionPage() {
     );
 }
 
-export default withAuth(SectionPage, ["Content-Editor"]);
+export default withAuth(SectionPage, ["Content-Editor", "Super-Admin"]);

@@ -177,4 +177,4 @@ function EditSectionPage() {
   );
 }
 
-export default withAuth(EditSectionPage, ["Content-Editor"]);
+export default withAuth(EditSectionPage, ["Content-Editor", "Super-Admin"]);

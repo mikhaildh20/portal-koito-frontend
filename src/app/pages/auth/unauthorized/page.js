@@ -39,7 +39,7 @@ export default function UnauthorizedPage() {
                     classType="outline-secondary px-4"
                     iconName="arrow-left"
                     label="Go Back"
-                    onClick={() => router.back()}
+                    onClick={() => router.push("/pages")}
                   />
                   
                   <Button

@@ -242,4 +242,4 @@ function EditTitlePage() {
   );
 }
 
-export default withAuth(EditTitlePage, ["Content-Editor"]);
+export default withAuth(EditTitlePage, ["Content-Editor", "Super-Admin"]);
