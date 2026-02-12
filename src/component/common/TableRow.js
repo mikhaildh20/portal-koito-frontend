@@ -24,6 +24,7 @@ export default function TableRow({
   onUpload,
   onFinal,
   onPrint,
+  onReset,
   config,
   rowClassName,
 }) {
@@ -164,6 +165,17 @@ export default function TableRow({
                 onClick={() => onFinal(id)}
               />
             );
+          case "Reset":
+            return (
+              <Icon
+                key={`${id}-${action}`}
+                name="arrow-clockwise"
+                type="Bold"
+                cssClass="btn px-1 py-0 text-warning"
+                title="Reset"
+                onClick={() => onReset(id)}
+              />
+            );
           default: {
             try {
               if (typeof action === "object") {
@@ -196,6 +208,7 @@ export default function TableRow({
       onFinal,
       onPrint,
       onReject,
+      onReset,
       onSent,
       onToggle,
       onUpload,
@@ -319,6 +332,7 @@ TableRow.propTypes = {
   onUpload: PropTypes.func,
   onFinal: PropTypes.func,
   onPrint: PropTypes.func,
+  onReset: PropTypes.func,
   config: PropTypes.object,
   rowClassName: PropTypes.func,
 };

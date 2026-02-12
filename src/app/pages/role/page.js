@@ -149,11 +149,11 @@ function RolePage() {
 
             Toast.success(data.message || "Role status updated successfully");
             loadData(1, sortBy, search, sortStatus);
-        } catch (err) {
-            Toast.error(err.message);
-        } finally {
-            setLoading(false);
-        }
+          } catch (err) {
+              Toast.error(err.message);
+          } finally {
+              setLoading(false);
+          }
         },
         [sortBy, search, sortStatus, loadData, dataRoleRaw]
     );

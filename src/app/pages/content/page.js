@@ -158,7 +158,7 @@ function ContentPage() {
               value={item.contentOrder || ""}
               onChange={(e) => handleOrderChange(item.id, e.target.value)}
               className="form-select w-auto text-center"
-              isDisabled={loadingOrders[item.tleId]}
+              isDisabled={loadingOrders[item.tleId]  || item.contentStatus == 0}
             />
           </div>
         ),

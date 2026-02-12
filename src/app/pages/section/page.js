@@ -143,7 +143,7 @@ function SectionPage() {
                     value={item.sectionOrder || ""}
                     onChange={(e) => handleOrderChange(item.id, e.target.value)}
                     className="form-select w-auto text-center"
-                    isDisabled={!isOrderDataReady}
+                    isDisabled={!isOrderDataReady || item.sectionStatus == 0}
                 />
                 </div>
             ),

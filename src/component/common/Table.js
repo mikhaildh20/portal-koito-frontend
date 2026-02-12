@@ -20,6 +20,7 @@ export default function Table({
   onUpload = () => {},
   onFinal = () => {},
   onPrint = () => {},
+  onReset = () => {},
   config = {},
   rowClassName,
 }) {
@@ -105,6 +106,7 @@ export default function Table({
               onUpload={onUpload}
               onFinal={onFinal}
               onPrint={onPrint}
+              onReset={onReset}
               config={config}
               rowClassName={rowClassName}
             />

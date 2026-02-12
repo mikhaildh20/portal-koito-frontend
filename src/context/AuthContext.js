@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, Children } from "react"
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { JWT_TOKEN_KEY, USER_DATA_KEY } from "@/lib/fetch";
-import { Toast } from "bootstrap/dist/js/bootstrap.bundle.min";
+import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
@@ -19,7 +19,7 @@ export const AuthProvider = ({children}) => {
             try{
                 setUser(JSON.parse(userData));
             }catch(err){
-                Toast.error("Failed to parse user data: ", error);
+                toast.error("Failed to parse user data: ", error);
                 logout();
             }
         }

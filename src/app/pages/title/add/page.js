@@ -213,6 +213,6 @@ function AddTitlePage() {
       </div>
     </>
   );
-}
+};
 
 export default withAuth(AddTitlePage, ["Content-Editor", "Super-Admin"]);

@@ -164,7 +164,7 @@ function TitlePage() {
               value={item.titleOrder || ""}
               onChange={(e) => handleOrderChange(item.id, e.target.value)}
               className="form-select w-auto text-center"
-              isDisabled={loadingOrders[item.secId]}
+              isDisabled={loadingOrders[item.secId] || item.titleStatus == 0}
             />
           </div>
         ),

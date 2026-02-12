@@ -61,13 +61,24 @@ export default function Sidebar({ isOpen, onToggle }) {
       ),
       roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
     },
+    // { 
+    //   name: "Role", 
+    //   path: "/pages/role",
+    //   icon: (
+    //     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    //       <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+    //       <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+    //     </svg>
+    //   ),
+    //   roles: ["Super-Admin"]
+    // },
     { 
-      name: "Role", 
-      path: "/pages/role",
+      name: "User", 
+      path: "/pages/user",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-          <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
         </svg>
       ),
       roles: ["Super-Admin"]
@@ -173,8 +184,7 @@ export default function Sidebar({ isOpen, onToggle }) {
           </ul>
         </nav>
 
-        {/* Footer Sidebar dengan Logout Button - NEW */}
-        <div className="border-top border-secondary">
+        <div className="border-top border-secondary pt-3">
           <div className="text-center pb-3">
             <small className="text-secondary d-block">Version 1.0.0</small>
           </div>

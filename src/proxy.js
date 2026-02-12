@@ -1,6 +1,6 @@
 const { NextResponse } = require("next/server");
 
-export function middleware(request){
+export default function proxy(request) {
     const token = request.cookies.get("jwtToken");
     const userData = request.cookies.get("userData");
     const { pathname } = request.nextUrl;
@@ -8,7 +8,7 @@ export function middleware(request){
     const publicRoutes = ["/pages/auth/login", "/pages/auth/unauthorized", "/"];
     const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
-    if(!token && !isPublicRoute){
+    if (!token && !isPublicRoute) {
         return NextResponse.redirect(new URL("/pages/auth/login", request.url));
     }
 
@@ -20,14 +20,7 @@ export function middleware(request){
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+    matcher: [
+        "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    ],
 };
