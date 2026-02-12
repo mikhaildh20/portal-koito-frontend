@@ -41,15 +41,13 @@ export default function LoginPage() {
         "POST"
       );
 
-      console.log(response);
-
       if (response.error) {
         toast.error(response.message || "Login failed");
         setIsLoading(false);
         return;
       }
 
-      const { token, userId, username: userName, role } = response;
+      const { token, userId, username: userName, role, name, force } = response;
       
       login(
         token, 
@@ -57,6 +55,8 @@ export default function LoginPage() {
           userId,
           username: userName,
           role,
+          name,
+          force
         }
       );
 

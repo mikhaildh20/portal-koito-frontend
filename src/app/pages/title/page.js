@@ -14,6 +14,7 @@ import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import Loading from "@/component/common/Loading";
 import withAuth from "@/component/withAuth";
+import CategoryBadge from "@/component/common/CategoryBadge";
 
 function TitlePage() {
   const router = useRouter();
@@ -153,7 +154,7 @@ function TitlePage() {
       const pagedData = data.map((item, index) => ({
         No: (page - 1) * pageSize + index + 1,
         id: item.id,
-        Section: item.sectionName,
+        Section: <CategoryBadge text={item.sectionName} />,
         Title: item.titleName,
         Type: item.titleType,
         Status: item.titleStatus === 1 ? "Active" : "Inactive",

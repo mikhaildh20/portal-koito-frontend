@@ -14,9 +14,11 @@ import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import Loading from "@/component/common/Loading";
 import withAuth from "@/component/withAuth";
+import { useAuth } from "@/context/AuthContext";
 
 function UserPage(){
     const router = useRouter();
+    const { user } = useAuth();
     const [dataUser, setDataUser] = useState([]);
     const [dataUserRaw, setDataUserRaw] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -65,7 +67,9 @@ function UserPage(){
 
             const { data, totalData } = response;
 
-            const pagedData = data.map((item, index) => ({
+            const pagedData = data
+            .filter(item => item.userId !== user.userId)
+            .map((item, index) => ({
                 No: (page - 1) * pageSize + index + 1,
                 id: item.userId,
                 Username: item.userName,
@@ -115,6 +119,52 @@ function UserPage(){
         (id) =>
         router.push(`/pages/user/edit/${encryptIdUrl(id)}`),
         [router]
+    );
+
+    const handleReset = useCallback(
+        async(id) => {
+            const result = await SweetAlert({
+                title: "Reset User",
+                text: "Are you sure want to reset this user?",
+                icon: "warning",
+                confirmText:"Yes, reset it!"
+            });
+
+            if(!result) return;
+
+            setLoading(true);
+
+            try{
+                const data = await fetchData(
+                    API_LINK + `User/ResetUser/${id}`,
+                    {},
+                    "POST"
+                );
+
+                if (data.error) {
+                    throw new Error(data.message);
+                }
+
+                const password = data.message;
+
+                await navigator.clipboard.writeText(password);
+
+                await SweetAlert({
+                    title: "User Credentials",
+                    text:`Temporary Password: ${password}\n\n` +
+                        `Password has been automatically copied to clipboard.\n` +
+                        `Please store it securely and inform the user.\n` +
+                        `User must change password on first login.`,
+                    icon: "info"
+                });
+
+                loadData(1, sortBy, search, sortStatus);
+            }catch(err){
+                Toast.error(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }, [sortBy, search, sortStatus, loadData]
     );
 
     const handleToggle = useCallback(
@@ -221,6 +271,7 @@ function UserPage(){
                     data={dataUser}
                     onEdit={handleEdit}
                     onToggle={handleToggle}
+                    onReset={handleReset}
                 />
                 {totalData > 0 && (
                     <Paging

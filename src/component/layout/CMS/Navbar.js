@@ -1,17 +1,18 @@
-// /src/component/layout/cms/Navbar.jsx
 "use client";
 
 import SweetAlert from "@/component/common/SweetAlert";
 import toast from 'react-hot-toast';
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Navbar({ onToggleSidebar }) {
   const { user, logout } = useAuth();
+  const router = useRouter();
 
-  const username = user?.username?.toUpperCase() || "";
+  const name = user?.name?.toUpperCase() || "";
 
-  const initials = username
+  const initials = name
     .split(" ")
     .filter(Boolean)
     .map(word => word[0])
@@ -31,6 +32,10 @@ export default function Navbar({ onToggleSidebar }) {
 
     logout();
     toast.success("Logout successfully.");
+  };
+
+  const handleProfileClick = () => {
+    router.push("/pages/user/profile");
   };
 
   return (
@@ -80,9 +85,12 @@ export default function Navbar({ onToggleSidebar }) {
 
       <div className="d-flex align-items-center gap-3">
         {/* User Info */}
-        <div className="d-none d-md-flex align-items-center gap-3">
+        <div className="d-none d-md-flex align-items-center gap-3"
+          onClick={handleProfileClick}
+          style={{ cursor: "pointer" }}
+        >
           <div className="text-end">
-            <div className="fw-semibold" style={{ fontSize: "0.875rem" }}>{username}</div>
+            <div className="fw-semibold" style={{ fontSize: "0.875rem" }}>{name}</div>
             <small className="text-muted">{user?.role}</small>
           </div>
           <div 

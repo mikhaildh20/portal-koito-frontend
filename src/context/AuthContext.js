@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, Children } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { JWT_TOKEN_KEY, USER_DATA_KEY } from "@/lib/fetch";
@@ -19,7 +19,7 @@ export const AuthProvider = ({children}) => {
             try{
                 setUser(JSON.parse(userData));
             }catch(err){
-                toast.error("Failed to parse user data: ", error);
+                toast.error("Failed to parse user data: ");
                 logout();
             }
         }
@@ -34,6 +34,24 @@ export const AuthProvider = ({children}) => {
         });
         setUser(userData);
     };
+
+    // const login = (token, userData) => {
+    //     Cookies.set(JWT_TOKEN_KEY, token, {
+    //         expires: 7,
+    //         secure: process.env.NODE_ENV === "production",
+    //         sameSite: "strict",
+    //     });
+
+    //     Cookies.set(USER_DATA_KEY, JSON.stringify(userData), {
+    //         expires: 7,
+    //         secure: process.env.NODE_ENV === "production",
+    //         sameSite: "strict",
+    //     });
+
+    //     setUser(userData);
+    // };
+
+
 
     const logout = () => {
         Cookies.remove(JWT_TOKEN_KEY);
