@@ -90,11 +90,6 @@ export default function Sidebar({ isOpen, onToggle }) {
     item.roles.includes(user?.role)
   );
 
-  // Helper function untuk cek apakah user punya akses
-  const hasAccess = (roles) => {
-    return roles.includes(user?.role);
-  };
-
   return (
     <>
       {/* Overlay untuk mobile */}
