@@ -29,10 +29,6 @@ function SectionPage() {
     const dataFilterSort = [
         { Value: "sec_name asc", Text: "Section Name [↑]" },
         { Value: "sec_name desc", Text: "Section Name [↓]" },
-        { Value: "sec_status asc", Text: "Section Status [↑]" },
-        { Value: "sec_status desc", Text: "Section Status [↓]" },
-        { Value: "sec_order asc", Text: "Section Order [↑]" },
-        { Value: "sec_order desc", Text: "Section Order [↓]" },
     ];
 
     const dataFilterStatus = [

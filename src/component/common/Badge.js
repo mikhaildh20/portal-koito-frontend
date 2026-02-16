@@ -7,14 +7,14 @@ export default function Badge({
   className = "",
 }) {
   const defaultStyleMap = {
-    Diproses: "bg-warning-subtle text-warning",
-    Disetujui: "bg-success-subtle text-success",
-    Ditolak: "bg-danger-subtle text-danger",
+    Procceed: "bg-warning-subtle text-warning",
+    Approve: "bg-success-subtle text-success",
+    Rejected: "bg-danger-subtle text-danger",
     Draft: "bg-info-subtle text-info",
-    Aktif: "bg-success-subtle text-success",
-    "Tidak Aktif": "bg-secondary-subtle text-secondary",
-    Selesai: "bg-primary-subtle text-primary",
-    Batal: "bg-danger-subtle text-danger",
+    Active: "bg-success-subtle text-success",
+    Inactive: "bg-secondary-subtle text-secondary",
+    Complete: "bg-primary-subtle text-primary",
+    Cancel: "bg-danger-subtle text-danger",
   };
 
   const styleMap = { ...defaultStyleMap, ...customMap };

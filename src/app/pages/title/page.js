@@ -35,10 +35,6 @@ function TitlePage() {
     { Value: "tle_name desc", Text: "Title Name [↓]" },
     { Value: "tle_type asc", Text: "Title Type [↑]" },
     { Value: "tle_type desc", Text: "Title Type [↓]" },
-    { Value: "tle_status asc", Text: "Title Status [↑]" },
-    { Value: "tle_status desc", Text: "Title Status [↓]" },
-    { Value: "tle_order asc", Text: "Title Order [↑]" },
-    { Value: "tle_order desc", Text: "Title Order [↓]" },
   ];
 
   const dataFilterStatus = [

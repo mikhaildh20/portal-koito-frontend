@@ -33,10 +33,6 @@ function ContentPage() {
     { Value: "tle_name desc", Text: "Title Name [↓]" },
     { Value: "cte_name asc", Text: "Content Name [↑]" },
     { Value: "cte_name desc", Text: "Content Name [↓]" },
-    { Value: "cte_status asc", Text: "Content Status [↑]" },
-    { Value: "cte_status desc", Text: "Content Status [↓]" },
-    { Value: "cte_order asc", Text: "Content Order [↑]" },
-    { Value: "cte_order desc", Text: "Content Order [↓]" },
   ];
 
   const dataFilterStatus = [
@@ -63,6 +59,8 @@ function ContentPage() {
 
     try{
       setLoadingOrders(prev => ({...prev, [titleId]: true }));
+
+      console.log(titleId);
 
       const response = await fetchData(
         API_LINK + "Content/GetOrder",
