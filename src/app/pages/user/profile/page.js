@@ -62,18 +62,15 @@ function ProfilePage() {
                 }
             }
 
-            // Validate name
             if (!formData.name || !formData.name.trim()) {
                 newErrors.name = "Name is required.";
             }
         }
 
-        // Validate current password (always required for any update)
         if (!formData.currentPassword || !formData.currentPassword.trim()) {
             newErrors.currentPassword = "Current password is required.";
         }
 
-        // Validate new password fields if user wants to change password
         if (showPasswordFields) {
             if (!formData.newPassword || !formData.newPassword.trim()) {
                 newErrors.newPassword = "New password is required.";

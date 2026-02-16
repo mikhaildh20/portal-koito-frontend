@@ -11,12 +11,14 @@ import Toast from "@/component/common/Toast";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import { decryptIdUrl } from "@/lib/encryptor";
 import withAuth from "@/component/withAuth";
+import { useAuth } from "@/context/AuthContext";
 
 const maxLengthRules = {
   contentName: 55,
 }
 
 function EditContentPage() {
+  const { getToken } = useAuth();
   const path = useParams();
   const id = decryptIdUrl(path.id);
   const [formData, setFormData] = useState({
@@ -139,7 +141,7 @@ function EditContentPage() {
     const selectedFile = e.target.files?.[0];
     
     if (selectedFile) {
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024;
       if (selectedFile.size > maxSize) {
         Toast.error("File size exceeds 5MB limit");
         return;
@@ -187,19 +189,20 @@ function EditContentPage() {
     const fd = new FormData();
     fd.append("file", file);
 
-    const res = await fetch(API_LINK + "Content/UploadFileContent", {
-      method: "POST",
-      body: fd,
-    });
+    const res = await fetchData(
+      API_LINK + "Content/UploadFileContent",
+      fd,
+      "POST",
+      true
+    );
 
-    const json = await res.json();
-
-    if (!res.ok || json.error) {
-      throw new Error(json.message || "Upload file failed");
+    if (res.error) {
+      throw new Error(res.message || "Upload file failed");
     }
 
-    return json;
+    return res;
   };
+
 
 
 

@@ -17,7 +17,7 @@ const maxLengthRules = {
 }
 
 function AddContentPage() {
-  const { user } = useAuth();
+  const { user, getToken } = useAuth();
   const [formData, setFormData] = useState({
     tleId: "",
     contentName: "",
@@ -154,22 +154,18 @@ function AddContentPage() {
     const fd = new FormData();
     fd.append("file", file);
 
-    try {
-      const res = await fetch(API_LINK + "Content/UploadFileContent", {
-        method: "POST",
-        body: fd,
-      });
+    const res = await fetchData(
+      API_LINK + "Content/UploadFileContent",
+      fd,
+      "POST",
+      true
+    );
 
-      const json = await res.json();
-
-      if (!res.ok || json.error) {
-        throw new Error(json.message || `Upload failed with status ${res.status}`);
-      }
-
-      return json;
-    } catch (err) {
-      throw new Error(`File upload error: ${err.message}`);
+    if (res.error) {
+      throw new Error(res.message || "Upload file failed");
     }
+
+    return res;
   };
 
 

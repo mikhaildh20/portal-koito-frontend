@@ -35,22 +35,9 @@ export const AuthProvider = ({children}) => {
         setUser(userData);
     };
 
-    // const login = (token, userData) => {
-    //     Cookies.set(JWT_TOKEN_KEY, token, {
-    //         expires: 7,
-    //         secure: process.env.NODE_ENV === "production",
-    //         sameSite: "strict",
-    //     });
-
-    //     Cookies.set(USER_DATA_KEY, JSON.stringify(userData), {
-    //         expires: 7,
-    //         secure: process.env.NODE_ENV === "production",
-    //         sameSite: "strict",
-    //     });
-
-    //     setUser(userData);
-    // };
-
+    const getToken = () => {
+        return Cookies.get(JWT_TOKEN_KEY);
+    };
 
 
     const logout = () => {
@@ -78,6 +65,7 @@ export const AuthProvider = ({children}) => {
                 isSuperAdmin,
                 isEditor,
                 isAuthenticated: !!user,
+                getToken,
             }}
         >
             {children}

@@ -52,20 +52,28 @@ apiClient.interceptors.response.use(
   }
 );
 
-const fetchData = async (url, param = {}, method = "POST") => {
+const fetchData = async (url, param = {}, method = "POST", isFormData = false) => {
   const normalizedMethod = method.toUpperCase();
 
   try {
+    let config = {};
+
+    if (isFormData) {
+      config.headers = {
+        "Content-Type": "multipart/form-data",
+      };
+    }
+
     let response;
     switch (normalizedMethod) {
       case "GET":
         response = await apiClient.get(url, { params: param });
         break;
       case "POST":
-        response = await apiClient.post(url, param);
+        response = await apiClient.post(url, param, config);
         break;
       case "PUT":
-        response = await apiClient.put(url, param);
+        response = await apiClient.put(url, param, config);
         break;
       case "DELETE":
         response = await apiClient.delete(url, { data: param });
@@ -73,6 +81,7 @@ const fetchData = async (url, param = {}, method = "POST") => {
       default:
         throw new Error(`Metode not supported: ${method}`);
     }
+
     return response.data;
   } catch (err) {
     if (err.response) {
@@ -98,6 +107,7 @@ const fetchData = async (url, param = {}, method = "POST") => {
     }
   }
 };
+
 
 export default fetchData;
 export { JWT_TOKEN_KEY, USER_DATA_KEY };
