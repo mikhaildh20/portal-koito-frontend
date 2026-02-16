@@ -35,11 +35,6 @@ export const AuthProvider = ({children}) => {
         setUser(userData);
     };
 
-    const getToken = () => {
-        return Cookies.get(JWT_TOKEN_KEY);
-    };
-
-
     const logout = () => {
         Cookies.remove(JWT_TOKEN_KEY);
         Cookies.remove(USER_DATA_KEY);
@@ -65,7 +60,6 @@ export const AuthProvider = ({children}) => {
                 isSuperAdmin,
                 isEditor,
                 isAuthenticated: !!user,
-                getToken,
             }}
         >
             {children}

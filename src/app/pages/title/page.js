@@ -259,13 +259,6 @@ function TitlePage() {
 
     useEffect(() => {
         setIsClient(true);
-
-        // if (!ssoData) {
-        //     Toast.error("Sesi anda habis. Silakan login kembali.");
-        //     router.push("./auth/login");
-        //     return;
-        // }
-
         loadData(1, sortBy, search, sortStatus);
     },[router, loadData, search, sortBy, sortStatus]);
 
