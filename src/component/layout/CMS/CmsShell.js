@@ -74,10 +74,24 @@ export default function CmsShell({ children }) {
       <div className="d-flex min-vh-100 bg-light position-relative">
         <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div className="flex-grow-1 d-flex flex-column" style={{ minWidth: 0 }}>
+        <div 
+          className="flex-grow-1 d-flex flex-column" 
+          style={{ 
+            minWidth: 0,
+            // ✅ Add margin untuk push content ke kanan pas desktop
+            marginLeft: typeof window !== 'undefined' && isSidebarOpen && window.innerWidth >= 992 ? '260px' : '0',
+            transition: 'margin-left 0.3s ease-in-out',
+            width: '100%'
+          }}
+        >
           <Navbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-          <main className="p-4 flex-grow-1">{children}</main>
+          <main className="p-4 flex-grow-1" style={{ 
+            overflow: 'auto',
+            maxWidth: '100%'
+          }}>
+            {children}
+          </main>
 
           <Footer />
         </div>

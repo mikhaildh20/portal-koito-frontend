@@ -32,7 +32,7 @@ export default function Sidebar({ isOpen, onToggle }) {
           <polyline points="13 2 13 9 20 9"></polyline>
         </svg>
       ),
-      roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
+      roles: ["Super-Admin", "Content-Editor"]
     },
     { 
       name: "Title", 
@@ -45,7 +45,7 @@ export default function Sidebar({ isOpen, onToggle }) {
           <line x1="16" y1="3" x2="14" y2="21"></line>
         </svg>
       ),
-      roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
+      roles: ["Super-Admin", "Content-Editor"]
     },
     { 
       name: "Content", 
@@ -59,19 +59,8 @@ export default function Sidebar({ isOpen, onToggle }) {
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
       ),
-      roles: ["Super-Admin", "Content-Editor"] // Fixed: Added Super-Admin
+      roles: ["Super-Admin", "Content-Editor"]
     },
-    // { 
-    //   name: "Role", 
-    //   path: "/pages/role",
-    //   icon: (
-    //     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    //       <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-    //       <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
-    //     </svg>
-    //   ),
-    //   roles: ["Super-Admin"]
-    // },
     { 
       name: "User", 
       path: "/pages/user",
@@ -102,11 +91,17 @@ export default function Sidebar({ isOpen, onToggle }) {
       )}
 
       <aside
-        className="bg-dark text-white position-fixed position-lg-relative h-100 d-flex flex-column"
+        className="bg-dark text-white d-flex flex-column"
         style={{
           width: "260px",
+          // ✅ Mobile: fixed, Desktop: fixed tapi dengan proper positioning
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100vh",
           transition: "transform 0.3s ease-in-out",
           zIndex: 1050,
+          // ✅ Transform untuk mobile slide in/out
           transform: isOpen ? "translateX(0)" : "translateX(-100%)",
           boxShadow: "2px 0 8px rgba(0,0,0,0.1)"
         }}
@@ -186,11 +181,6 @@ export default function Sidebar({ isOpen, onToggle }) {
         </div>
       </aside>
 
-      {/* Spacer untuk desktop */}
-      {isOpen && (
-        <div className="d-none d-lg-block" style={{ width: "260px" }} />
-      )}
-
       <style jsx>{`
         .hover-bg-secondary:hover {
           background-color: rgba(255, 255, 255, 0.1) !important;
@@ -214,6 +204,13 @@ export default function Sidebar({ isOpen, onToggle }) {
         
         nav::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ✅ Desktop: always visible, Mobile: slide in/out */
+        @media (min-width: 992px) {
+          aside {
+            transform: translateX(0) !important;
+          }
         }
       `}</style>
     </>

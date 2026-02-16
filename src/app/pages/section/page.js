@@ -14,6 +14,7 @@ import SweetAlert from "@/component/common/SweetAlert";
 import Breadcrumb from "@/component/common/Breadcrumb";
 import Loading from "@/component/common/Loading";
 import withAuth from "@/component/withAuth";
+import PortalContent from "@/component/layout/Portal/PortalContent";
 
 function SectionPage() {
     const router = useRouter();
@@ -22,6 +23,8 @@ function SectionPage() {
     const [dataOrder, setDataOrder] = useState([]);
     const [isOrderDataReady, setIsOrderDataReady] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [previewKey, setPreviewKey] = useState(0);
+    const [showPreview, setShowPreview] = useState(false);
     const sortRef = useRef();
     const statusRef = useRef();
     const [isClient, setIsClient] = useState(false);
@@ -95,7 +98,8 @@ function SectionPage() {
 
             Toast.success(response.message || "Order updated");
 
-            loadData(currentPage, sortBy, search, sortStatus);
+            await loadData(currentPage, sortBy, search, sortStatus);
+            setPreviewKey(prev => prev + 1);
         } catch (err) {
             Toast.error(err.message || "Failed to update order");
         }
@@ -183,6 +187,10 @@ function SectionPage() {
         router.push("/pages/section/add");
     }, [router]);
 
+    const handleTogglePreview = useCallback(() => {
+        setShowPreview(prev => !prev);
+    }, []);
+
     const handleEdit = useCallback(
         (id) =>
         router.push(`/pages/section/edit/${encryptIdUrl(id)}`),
@@ -222,7 +230,8 @@ function SectionPage() {
             }
 
             Toast.success(data.message || "Section status updated successfully");
-            loadData(1, sortBy, search, sortStatus);
+            await loadData(1, sortBy, search, sortStatus);
+            setPreviewKey(prev => prev + 1);
         } catch (err) {
             Toast.error(err.message);
         } finally {
@@ -268,6 +277,43 @@ function SectionPage() {
                 title="Sections Management"
                 items={[]}
             />
+            
+            <div className="mb-3 d-flex justify-content-end">
+                <button
+                    onClick={handleTogglePreview}
+                    className="btn btn-outline-primary btn-sm d-flex align-items-center gap-2"
+                    style={{
+                        borderRadius: "8px",
+                        padding: "0.5rem 1rem",
+                        fontWeight: "500"
+                    }}
+                >
+                    <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                    >
+                        {showPreview ? (
+                            <>
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </>
+                        ) : (
+                            <>
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </>
+                        )}
+                    </svg>
+                    {showPreview ? "Hide Preview" : "Show Preview"}
+                </button>
+            </div>
+
             <div>
                 <Formsearch
                     onSearch={handleSearch}
@@ -279,23 +325,54 @@ function SectionPage() {
                     filterContent={filterContent}
                 />
             </div>
-            <div className="row align-items-center g-3">
-                <div className="col-12">
-                    <Table
-                        size="Small"
-                        data={dataSection}
-                        onEdit={handleEdit}
-                        onToggle={handleToggle}
-                    />
-                    {totalData > 0 && (
-                        <Paging
-                            pageSize={pageSize}
-                            pageCurrent={currentPage}
-                            totalData={totalData}
-                            navigation={handleNavigation}
-                        />
-                    )}
+
+            <div className="row g-3">
+                {/* Left: Table */}
+                <div className={`col-12 ${showPreview ? 'col-xl-6' : ''}`}>
+                    <div className="card border-0 shadow-sm">
+                        <div className="card-body p-0">
+                            <Table
+                                size="Small"
+                                data={dataSection}
+                                onEdit={handleEdit}
+                                onToggle={handleToggle}
+                            />
+                            {totalData > 0 && (
+                                <div className="p-3 border-top">
+                                    <Paging
+                                        pageSize={pageSize}
+                                        pageCurrent={currentPage}
+                                        totalData={totalData}
+                                        navigation={handleNavigation}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
+
+                {showPreview && (
+                    <div className="col-12 col-xl-6">
+                        <div className="card border-0 shadow-sm">
+                            <div className="card-header bg-white border-bottom">
+                                <div className="d-flex align-items-center justify-content-between">
+                                    <span className="badge bg-success-subtle text-success">
+                                        Real-time Preview
+                                    </span>
+                                </div>
+                            </div>
+                            <div 
+                                className="card-body p-0"
+                                style={{
+                                    maxHeight: "calc(100vh - 250px)",
+                                    overflow: "auto"
+                                }}
+                            >
+                                <PortalContent key={previewKey} />
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );
